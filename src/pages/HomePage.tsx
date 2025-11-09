@@ -13,14 +13,10 @@ export default function HomePage() {
         direction: 'rtl',
         bgcolor: 'background.default',
         color: 'text.primary',
-        height: '',
-        display: 'flex',
-        flexDirection: 'column',
-        p: 3,
         // border: '1px solid',
       }}
     >
-      <Typography variant="h5" sx={{ ...headerText, mb: 8 }}>
+      <Typography variant="h6" sx={{ ...headerText, mb: 6 }}>
         משתמש יקר, ברוך הבא למערכת!
       </Typography>
       <Grid container spacing={2} sx={{ mb: 4 }}>

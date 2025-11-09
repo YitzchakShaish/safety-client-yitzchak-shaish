@@ -41,6 +41,13 @@ export const getAppTheme = (mode: "light" | "dark") =>
     },
 
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          html: {
+            fontSize: "clamp(14px, 1.1vw, 18px)",
+          },
+        },
+      },
       MuiAppBar: {
         styleOverrides: {
           root: {
