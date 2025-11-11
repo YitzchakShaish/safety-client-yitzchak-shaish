@@ -6,9 +6,12 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { useColorMode } from "../theme/ThemeContext";
 
 export default function TopBar() {
   const theme = useTheme();
+    const { toggleColorMode } = useColorMode();
+
 
   return (
     <AppBar position="fixed" color="primary" sx={{ direction: "rtl", top: 0, left: 0, right: 0, zIndex: 1200, height: "4rem" }}>
@@ -22,7 +25,7 @@ export default function TopBar() {
         </Typography>
 
         <Box sx={{ display: "flex", gap: "clamp(0.5rem, 1vw, 1.5rem)" }}>
-          <IconButton sx={topIconButton}>
+          <IconButton sx={topIconButton} onClick={toggleColorMode}>
             {theme.palette.mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
 

@@ -16,7 +16,7 @@ export default function Sidebar() {
   const menuItems = [
     { label: "מבט על", path: "/", icon: <DashboardIcon /> },
     { label: "הזנת אירוע", path: "/event-entry", icon: <EventIcon /> },
-    { label: "חיפוש אירועים", path: "/search-events", icon: <SearchIcon /> },
+    { label: "ניהול אירועים", path: "/events", icon: <SearchIcon /> },
     { label: "דוחות BI", path: "/reports", icon: <BarChartIcon /> },
   ];
 

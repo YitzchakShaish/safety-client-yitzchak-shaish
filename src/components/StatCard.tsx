@@ -17,7 +17,7 @@ export default function StatCard({
 
       <Stack spacing={0.5}>
         <Typography variant="subtitle2" sx={subtitleText}>{label}</Typography>
-        <Typography variant="h5" fontWeight={600}>{value}</Typography>
+        <Typography variant="h5" sx={{...subtitleText,   color: "text.primary"} } fontWeight={600}>{value}</Typography>
       </Stack>
     </Paper>
   );

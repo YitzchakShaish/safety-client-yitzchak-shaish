@@ -9,7 +9,7 @@ export default function Layout() {
       sx={{
         display: "grid",
         gridTemplateColumns: "auto 1fr", 
-        gridTemplateRows: "auto 1fr",   
+        gridTemplateRows: "4rem 1fr",   
         gridTemplateAreas: `
           "topbar topbar"
           "sidebar main"
@@ -44,6 +44,7 @@ export default function Layout() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            border: "1px solid",
           }}
         >
           <Outlet />

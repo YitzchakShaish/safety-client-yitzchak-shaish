@@ -1,16 +1,14 @@
 import { BrowserRouter } from 'react-router';
 import { createRoot } from 'react-dom/client'
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { getAppTheme } from "./theme/theme";
+import { CssBaseline } from "@mui/material";
+import ThemeContextProvider from "./theme/ThemeContext";
 import App from './App.tsx'
 
-const theme = getAppTheme("light");
-
 createRoot(document.getElementById('root')!).render(
-  <ThemeProvider theme={theme}>
+  <BrowserRouter>
     <CssBaseline />
-    <BrowserRouter>
+    <ThemeContextProvider>
       <App />
-    </BrowserRouter>
-  </ThemeProvider>,
+    </ThemeContextProvider>
+  </BrowserRouter>
 )
