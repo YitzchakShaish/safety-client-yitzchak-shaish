@@ -121,10 +121,8 @@ export interface EventInfo {
 }
 
 export interface SummaryInfo {
-  injuries?: {
-    name?: string;
-    injuryLevel: InjuryLevel;
-  }[];
+  injuryLevel: InjuryLevel;
+  injuryDetails: string;
   recommendations: string;
   approval: boolean;
 }
@@ -133,5 +131,9 @@ export interface EventReport {
   reportInfo: ReportInfo;
   eventInfo: EventInfo;
   summaryInfo: SummaryInfo;
+}
+
+export interface EventReportWithId extends EventReport {
+  id: number;
 }
 

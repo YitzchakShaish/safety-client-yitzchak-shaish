@@ -8,6 +8,8 @@ export default function MyTextField({
     readOnly = false,
     required = false,
     validate,
+    multiline = false,
+    rows,
     color = "primary",
 }: {
     label: string;
@@ -16,8 +18,10 @@ export default function MyTextField({
     type?: string;
     readOnly?: boolean;
     required?: boolean;
-    validate?: (val: string| Date) => string | null;
-    color?: "primary" | "secondary" | "error" | "info" | "success" | "warning" ;
+    validate?: (val: string | Date) => string | null;
+    color?: "primary" | "secondary" | "error" | "info" | "success" | "warning";
+    multiline?: boolean;
+    rows?: number;
 }) {
     const errorMessage = validate ? validate(value) : null;
 
@@ -33,6 +37,8 @@ export default function MyTextField({
             helperText={errorMessage || ""}
             InputProps={readOnly ? { readOnly: true } : undefined}
             color={color}
+            multiline={multiline}
+            rows={rows}
         />
     );
 };

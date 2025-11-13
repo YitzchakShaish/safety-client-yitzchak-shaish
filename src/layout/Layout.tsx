@@ -8,8 +8,8 @@ export default function Layout() {
     <Box
       sx={{
         display: "grid",
-        gridTemplateColumns: "auto 1fr", 
-        gridTemplateRows: "4rem 1fr",   
+        gridTemplateColumns: "auto 1fr",
+        gridTemplateRows: "4rem 1fr",
         gridTemplateAreas: `
           "topbar topbar"
           "sidebar main"
@@ -28,28 +28,18 @@ export default function Layout() {
       <Box gridArea="sidebar">
         <SideBar />
       </Box>
-
-      <Box
-        gridArea="main"
-        component="main"
+      <Container
+        maxWidth="lg"
         sx={{
+          flexGrow: 1,
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          transition: "all 0.3s ease",
+          flexDirection: "column",
+          py: 4,
+          // border: "1px solid",
         }}
       >
-        <Container
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            border: "1px solid",
-          }}
-        >
-          <Outlet />
-        </Container>
-      </Box>
+        <Outlet />
+      </Container>
     </Box>
   );
 }

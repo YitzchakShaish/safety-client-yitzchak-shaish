@@ -1,4 +1,4 @@
-import { Grid} from "@mui/material";
+import { Grid } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
 import MyTextField from "../MyTextField";
 
@@ -26,7 +26,7 @@ export default function ReporterInfo({
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={6} sx={{ mt: 5 }}>
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="שם המדווח"
@@ -35,8 +35,14 @@ export default function ReporterInfo({
           type="text"
           validate={(v) => {
             if (typeof v !== "string") return null;
-            return v.trim() === "" ? "שדה זה הוא חובה" : v.length < 5 ? "שם המדווח חייב להכיל לפחות 5 תווים" : null;
+            const name = (v || "").trim();
+            if (!name) return "שדה זה הוא חובה";
+            if (name.length < 5) return "שם המדווח חייב להכיל לפחות 5 תווים";
+            if (!name.includes(" ")) return "נא להזין שם פרטי ושם משפחה";
+            if (!/^[\p{L} ]+$/u.test(name)) return "השם יכול להכיל רק אותיות ורווחים";
+            return null;
           }}
+
           onChange={(val) => handleChange("fullName", val)}
         />
       </Grid>
@@ -47,7 +53,7 @@ export default function ReporterInfo({
           value={eventData.reportInfo.phone}
           type="tel"
           required
-          validate={(v) =>{
+          validate={(v) => {
             if (typeof v !== "string") return null;
             return v.trim() === "" ? "שדה זה הוא חובה" : !/^\+?\d{7,15}$/.test(v) ? "נא להזין מספר טלפון תקין" : null;
           }}
@@ -60,6 +66,15 @@ export default function ReporterInfo({
           label="תפקיד"
           value={eventData.reportInfo.position}
           onChange={(val) => handleChange("position", val)}
+          required
+          type="text"
+          validate={(v) => {
+            if (typeof v !== "string") return null;
+            const name = (v || "").trim();
+            if (!name) return "שדה זה הוא חובה";
+            if (!/^[\p{L} ]+$/u.test(name)) return "תפקיד המדווח יכול להכיל רק אותיות ורווחים";
+            return null;
+          }}
         />
       </Grid>
 
@@ -68,19 +83,29 @@ export default function ReporterInfo({
           label="יחידה"
           value={eventData.reportInfo.unit}
           onChange={(val) => handleChange("unit", val)}
+          required
+          type="text"
+          validate={(v) => {
+            if (typeof v !== "string") return null;
+            const name = (v || "").trim();
+            if (!name) return "שדה זה הוא חובה";
+            if (!/^[\p{L} ]+$/u.test(name)) return "היחידה יכולה להכיל רק אותיות ורווחים";
+            return null;
+          }}
         />
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="תת-יחידה"
+          type="text"
           value={eventData.reportInfo.subUnit}
           onChange={(val) => handleChange("subUnit", val)}
         />
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField label="סטטוס טיפול" value={eventData.reportInfo.eventStatus} readOnly color="error"/>
+        <MyTextField label="סטטוס טיפול" value={eventData.reportInfo.eventStatus} readOnly color="error" />
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
