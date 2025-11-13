@@ -2,6 +2,7 @@ import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, 
 import { useEventForm } from "../../hooks/useEventForm";
 import MyTextField from "../MyTextField";
 import { type SummaryInfo, injuryLevelArr } from "../../types/eventReport";
+import { validateTextField } from "../../utils/validate";
 
 
 export default function SummaryInfoStep({
@@ -36,13 +37,7 @@ export default function SummaryInfoStep({
           label="מסקנות האירוע"
           value={eventData.summaryInfo.recommendations}
           required
-          validate={(v) => {
-            if (typeof v !== "string") return null;
-            if (v.trim() === "") return "שדה זה הוא חובה";
-            if (v.trim().length < 30) return "מסקנות האירוע חייבות להכיל לפחות 30 תווים";
-            if (!/^[\p{L}\s]+$/u.test(v)) return "מסקנות האירוע יכולות להכיל רק אותיות ורווחים";
-            return null;
-          }}  
+          validate={(v) => validateTextField(v, "מסקנות האירוע", 20)}
           onChange={(val) => handleChange("recommendations", val)}
           multiline
           rows={4}
@@ -76,13 +71,7 @@ export default function SummaryInfoStep({
             label="פרטי פגיעות"
             value={eventData.summaryInfo.injuryDetails}
             required
-                   validate={(v) => {
-            if (typeof v !== "string") return null;
-            if (v.trim() === "") return "שדה זה הוא חובה";
-            if (v.trim().length < 15) return "פרטי הפגיעות חייבים להכיל לפחות 15 תווים";
-            if (!/^[\p{L}\s]+$/u.test(v)) return "פרטי הפגיעות יכולים להכיל רק אותיות ורווחים";
-            return null;
-          }} 
+            validate={(v) => validateTextField(v, "פרטי פגיעות", 10)}
             onChange={(val) => handleChange("injuryDetails", val)}
             multiline
             rows={4}

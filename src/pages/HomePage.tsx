@@ -1,12 +1,10 @@
 import { Box, Grid, Typography } from '@mui/material';
-
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import StatCard from '../components/StatCard';
 import { headerText } from '../styles/common';
-import EventsTable from '../components/EventsTable';
-import { mockEventReports } from '../mock/eventsData';
+
 
 export default function HomePage() {
   return (

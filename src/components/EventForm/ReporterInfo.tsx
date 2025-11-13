@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
 import MyTextField from "../MyTextField";
+import { validateFullName, validateTextField } from "../../utils/validate";
 
 export default function ReporterInfo({
   onCompleteChange,
@@ -33,16 +34,7 @@ export default function ReporterInfo({
           value={eventData.reportInfo.fullName}
           required
           type="text"
-          validate={(v) => {
-            if (typeof v !== "string") return null;
-            const name = (v || "").trim();
-            if (!name) return "שדה זה הוא חובה";
-            if (name.length < 5) return "שם המדווח חייב להכיל לפחות 5 תווים";
-            if (!name.includes(" ")) return "נא להזין שם פרטי ושם משפחה";
-            if (!/^[\p{L} ]+$/u.test(name)) return "השם יכול להכיל רק אותיות ורווחים";
-            return null;
-          }}
-
+          validate={(v) => validateFullName(v)}
           onChange={(val) => handleChange("fullName", val)}
         />
       </Grid>
@@ -68,13 +60,7 @@ export default function ReporterInfo({
           onChange={(val) => handleChange("position", val)}
           required
           type="text"
-          validate={(v) => {
-            if (typeof v !== "string") return null;
-            const name = (v || "").trim();
-            if (!name) return "שדה זה הוא חובה";
-            if (!/^[\p{L} ]+$/u.test(name)) return "תפקיד המדווח יכול להכיל רק אותיות ורווחים";
-            return null;
-          }}
+          validate={(v) => validateTextField(v, "תפקיד")}
         />
       </Grid>
 
@@ -85,13 +71,7 @@ export default function ReporterInfo({
           onChange={(val) => handleChange("unit", val)}
           required
           type="text"
-          validate={(v) => {
-            if (typeof v !== "string") return null;
-            const name = (v || "").trim();
-            if (!name) return "שדה זה הוא חובה";
-            if (!/^[\p{L} ]+$/u.test(name)) return "היחידה יכולה להכיל רק אותיות ורווחים";
-            return null;
-          }}
+          validate={(v) => validateTextField(v, "יחידה")}
         />
       </Grid>
 
@@ -111,17 +91,13 @@ export default function ReporterInfo({
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="תאריך דיווח"
-          value={eventData.reportInfo.reportDate.toLocaleDateString("he-IL")}
-          readOnly
-          color="secondary"
+          value={eventData.reportInfo.reportDate.toLocaleDateString("he-IL")} readOnly color="secondary"
         />
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField label="שעת דיווח" value={eventData.reportInfo.reportTime} readOnly color="secondary"
-        />
+        <MyTextField label="שעת דיווח" value={eventData.reportInfo.reportTime} readOnly color="secondary" />
       </Grid>
     </Grid>
-
   );
 };

@@ -2,6 +2,7 @@ import { FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, R
 import { useEventForm } from "../../hooks/useEventForm";
 import { categoryArr, eventResultArr, eventSeverityArr, type Location, locationArr, personalActivityTypeArr, unitActivityTypeArr, weatherConditionsArr } from "../../types/eventReport";
 import MyTextField from "../MyTextField";
+import { validateTextField } from "../../utils/validate";
 
 export default function EventInfo({ onCompleteChange }: { onCompleteChange: (valid: boolean) => void }) {
   const { eventData, setEventData } = useEventForm();
@@ -124,13 +125,7 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
           label="תיאור האירוע"
           value={eventData.eventInfo.eventDescription}
           required
-          validate={(v) => {
-            if (typeof v !== "string") return null;
-            if (v.trim() === "") return "שדה זה הוא חובה";
-            if (v.trim().length < 30) return "תיאור האירוע חייב להכיל לפחות 30 תווים";
-            if (!/^[\p{L}\s]+$/u.test(v)) return "תיאור האירוע יכול להכיל רק אותיות ורווחים";
-            return null;
-          }}
+          validate={(v) => validateTextField(v, "תיאור האירוע", 30)}
           onChange={(val) => handleChange("eventDescription", val)}
           multiline={true}
           rows={4}
