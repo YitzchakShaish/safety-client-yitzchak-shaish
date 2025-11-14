@@ -34,8 +34,9 @@ export default function Layout() {
           flexGrow: 1,
           display: "flex",
           flexDirection: "column",
-          py: 4,
-          // border: "1px solid",
+          py: { xs: 2, sm: 3, md: 4 },
+          overflow: "hidden",
+          minHeight: 0,
         }}
       >
         <Outlet />

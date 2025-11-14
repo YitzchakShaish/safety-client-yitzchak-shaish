@@ -8,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import UserProfileCard from "./UserProfileCard";
 import { sidebarItemButton } from "../styles/common";
+import { sidebarHeaderStyle } from "../styles/sidebar.styles";
 
 export default function Sidebar() {
   const theme = useTheme();
@@ -43,12 +44,12 @@ export default function Sidebar() {
         },
         [theme.breakpoints.down("md")]: {
           "& .MuiDrawer-paper": {
-            width: "clamp(8rem, 20vw, 12rem)"
+            width: "clamp(6rem, 20vw, 12rem)",
           },
         },
       }}
     >
-      <Box sx={{ p: "clamp(1rem, 3vw, 1.5rem)", textAlign: "center" }}>
+      <Box sx={sidebarHeaderStyle(theme)}>
         <Typography variant="h6" sx={{ color: theme.palette.primary.main }}>
           תפריט מערכת
         </Typography>
@@ -56,31 +57,44 @@ export default function Sidebar() {
 
       <Divider />
 
-      <List sx={{ mt: 1 }}>
+      <List sx={{ mt: 1, flex: 1 }}>
         {menuItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton
-              sx={sidebarItemButton(theme)}
+              sx={{
+                ...sidebarItemButton(theme),
+                py: { xs: 0.5, lg: 1 },
+                display: 'flex',
+                justifyContent: 'space-around',
+              }}
               onClick={() => navigate(item.path)}
             >
-              <ListItemText secondary={item.label} />
               <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText
+                secondary={item.label}
+                primaryTypographyProps={{ fontSize: { xs: "0.75rem", lg: "0.875rem" } }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
 
       <Divider sx={{ width: "100%" }} />
-
-      <Box sx={{ p: "1.2rem", textAlign: "center" }}>
+      <Box sx={sidebarHeaderStyle(theme)}>
         <Typography variant="h6" sx={{ color: "primary.main" }}>
           פרטי משתמש
         </Typography>
       </Box>
 
       <Divider sx={{ width: "100%", mb: 1 }} />
-
-      <UserProfileCard name='אבי' rank='אל"מ' avatarSrc='1.png' personalNumber={770770}></UserProfileCard>
+      <Box sx={{ px: { xs: 1, sm: 0 }, pb: { xs: 1, sm: 0 } }}>
+        <UserProfileCard
+          name="אבי"
+          rank='אל"מ'
+          avatarSrc="1.png"
+          personalNumber={770770}
+        />
+      </Box>
     </Drawer>
   );
 }

@@ -57,9 +57,19 @@ export default function EventEntry() {
 
     const CurrentStepComponent = stepComponents[activeStep];
 
-    return (<>
+    return (<> 
         <Box sx={outerBoxSx}>
-            <Stepper nonLinear activeStep={activeStep}>
+            <Stepper 
+                nonLinear 
+                activeStep={activeStep}
+                sx={{ 
+                    flexShrink: 0,
+                    mb: { xs: 1, sm: 2 },
+                    '& .MuiStepLabel-label': {
+                        fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }
+                    }
+                }}
+            >
                 {steps.map((label, index) => (
                     <Step key={label} completed={completed[index]}>
                         <StepButton onClick={() => handleStep(index)} sx={{
@@ -72,7 +82,7 @@ export default function EventEntry() {
             <Box sx={innerBoxSx}>
                 <CurrentStepComponent onCompleteChange={setStepValid} />
             </Box>
-            <Box sx={{ display: 'flex', pt: 2 }}>
+            <Box sx={{ display: 'flex', pt: 2, flexShrink: 0 }}>
                 <Button disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>הקודם</Button>
                 <Box sx={{ flex: 1 }} />
                 {allStepsCompleted ? (

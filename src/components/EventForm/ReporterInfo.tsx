@@ -27,7 +27,7 @@ export default function ReporterInfo({
   };
 
   return (
-    <Grid container spacing={6} sx={{ mt: 5 }}>
+    <Grid container spacing={{ xs: 3, sm: 4, md: 4, lg: 4, xl: 6 }} sx={{ mt: { xs: 2, sm: 3, md: 3, lg: 4, xl: 5 } }}>
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="שם המדווח"

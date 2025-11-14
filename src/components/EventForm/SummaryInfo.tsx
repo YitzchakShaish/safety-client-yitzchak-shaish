@@ -30,7 +30,7 @@ export default function SummaryInfoStep({
   const showInjuries = eventData.eventInfo.eventResult === "י.נ.א.נ (יש נפגעים, אין נזק)" || eventData.eventInfo.eventResult === "י.נ.י.נ (יש נפגעים, יש נזק)";
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 3 }} sx={{ mt: { xs: 2, sm: 3, md: 3, lg: 5 } }}>
 
       <Grid size={{ xs: 12 }}>
         <MyTextField
