@@ -1,6 +1,6 @@
 import { Paper, Stack, Box, Typography } from "@mui/material";
-import { cardBase, iconBox, subtitleText } from "../styles/common";
-import type { StatCardProps } from "../types/viewFromAbove";
+import { cardBase, iconBox, subtitleText } from "../../styles/common";
+import type { StatCardProps } from "../../types/viewFromAbove";
 
 export default function StatCard({
   icon,
