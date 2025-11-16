@@ -1,10 +1,12 @@
-import { FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, Box } from "@mui/material";
+import { FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, Box, TextField, useTheme } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
 import { categoryArr, eventResultArr, eventSeverityArr, type Location, locationArr, personalActivityTypeArr, unitActivityTypeArr, weatherConditionsArr } from "../../types/eventReport";
 import MyTextField from "../MyTextField";
 import { validateTextField } from "../../utils/validate";
+import { dateTimeInputDarkModeSx } from "../../styles/eventInfo.styles";
 
 export default function EventInfo({ onCompleteChange }: { onCompleteChange: (valid: boolean) => void }) {
+  const theme = useTheme();
   const { eventData, setEventData } = useEventForm();
   const eventInfoArr = [unitActivityTypeArr, personalActivityTypeArr, categoryArr, eventSeverityArr, eventResultArr, weatherConditionsArr];
 
@@ -45,33 +47,37 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField
+        <TextField
           label="תאריך אירוע"
+          type="date"
           value={eventData.eventInfo.eventDate}
           required
-          validate={(v) =>
-            v === ""
+          fullWidth
+          onChange={(e) => handleChange("eventDate", e.target.value)}
+          sx={dateTimeInputDarkModeSx(theme)}
+          helperText={
+            eventData.eventInfo.eventDate === ""
               ? "שדה זה הוא חובה"
-              : v > new Date().toISOString().split("T")[0]
+              : eventData.eventInfo.eventDate > new Date().toISOString().split("T")[0]
                 ? "תאריך האירוע לא יכול להיות בעתיד"
-                : null
+                : ""
           }
-          onChange={(val) => handleChange("eventDate", val)}
-          type="date"
         />
 
       </Grid >
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField
+        <TextField
           label="שעת אירוע"
           value={eventData.eventInfo.eventTime}
           required
-          validate={(v) =>
-            v === ""
+          fullWidth
+          sx={dateTimeInputDarkModeSx(theme)}
+          helperText={
+            eventData.eventInfo.eventTime === ""
               ? "שדה זה הוא חובה"
-              : null
+              : ""
           }
-          onChange={(val) => handleChange("eventTime", val)}
+          onChange={(e) => handleChange("eventTime", e.target.value)}
           type="time"
         />
 

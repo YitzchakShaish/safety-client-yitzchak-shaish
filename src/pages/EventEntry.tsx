@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Stepper, Step, StepButton, Button } from '@mui/material';
+import { Box, Stepper, Step, StepButton, Button, useTheme } from '@mui/material';
 import ReporterInfo from '../components/EventForm/ReporterInfo';
 import EventInfo from '../components/EventForm/EventInfo';
 import SummaryInfo from '../components/EventForm/SummaryInfo';
@@ -14,10 +14,10 @@ const stepComponents = [
     SummaryInfo
 ];
 export default function EventEntry() {
+    const theme = useTheme();
     const [activeStep, setActiveStep] = useState(0);
     const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
     const [stepValid, setStepValid] = useState(false);
-
     const { eventData, setEventData } = useEventForm();
 
     const totalSteps = steps.length;
@@ -57,12 +57,12 @@ export default function EventEntry() {
 
     const CurrentStepComponent = stepComponents[activeStep];
 
-    return (<> 
-        <Box sx={outerBoxSx}>
-            <Stepper 
-                nonLinear 
+    return (<>
+        <Box sx={outerBoxSx(theme)}>
+            <Stepper
+                nonLinear
                 activeStep={activeStep}
-                sx={{ 
+                sx={{
                     flexShrink: 0,
                     mb: { xs: 1, sm: 2 },
                     '& .MuiStepLabel-label': {
@@ -79,7 +79,7 @@ export default function EventEntry() {
                 ))}
             </Stepper>
 
-            <Box sx={innerBoxSx}>
+            <Box sx={innerBoxSx(theme)}>
                 <CurrentStepComponent onCompleteChange={setStepValid} />
             </Box>
             <Box sx={{ display: 'flex', pt: 2, flexShrink: 0 }}>

@@ -3,6 +3,8 @@ import { createTheme } from "@mui/material/styles";
 declare module '@mui/material/styles' {
   interface TypeBackground {
     sidebar?: string;
+    reportFormOuter?: string;
+    reportFormInner?: string;
   }
 }
 
@@ -27,6 +29,12 @@ export const getAppTheme = (mode: "light" | "dark") =>
           mode === "light"
             ? "linear-gradient(180deg, rgba(207, 239, 255, 1) 0%, rgba(179, 224, 255, 0.9) 50%, rgba(155, 213, 255, 0.8) 100%)"
             : "linear-gradient(180deg, rgba(25, 25, 25, 1) 0%, rgba(50, 50, 50, 1) 100%)",
+        reportFormOuter: mode === "light"
+          ? "linear-gradient(135deg, #e4edf3 0%, #d9e6ee 100%)"
+          : "linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%)",
+        reportFormInner: mode === "light"
+          ? "linear-gradient(135deg, #d9e4ec 0%, #c9d8e3 100%)"
+          : "linear-gradient(135deg, #2a2a2a 0%, #333333 100%)",
       },
 
       text: {
