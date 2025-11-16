@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import StatCard from '../components/StatCard';
+import StatCard from '../components/common/StatCard';
 import { headerText } from '../styles/common';
 
 
@@ -13,7 +13,7 @@ export default function HomePage() {
         direction: 'rtl',
         bgcolor: 'background.default',
         color: 'text.primary',
-        border: '1px solid red',
+        // border: '1px solid red',
         display: 'flex',
         justifyContent: 'center',
         flexDirection: 'column',

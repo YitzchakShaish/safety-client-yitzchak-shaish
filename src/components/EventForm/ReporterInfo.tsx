@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
-import MyTextField from "../MyTextField";
+import MyTextField from "../common/MyTextField";
 import { validateFullName, validateTextField } from "../../utils/validate";
 
 export default function ReporterInfo({

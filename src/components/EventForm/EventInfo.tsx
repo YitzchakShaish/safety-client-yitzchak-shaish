@@ -1,7 +1,7 @@
 import { FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, Box, TextField, useTheme } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
 import { categoryArr, eventResultArr, eventSeverityArr, type Location, locationArr, personalActivityTypeArr, unitActivityTypeArr, weatherConditionsArr } from "../../types/eventReport";
-import MyTextField from "../MyTextField";
+import MyTextField from "../common/MyTextField";
 import { validateTextField } from "../../utils/validate";
 import { dateTimeInputDarkModeSx } from "../../styles/eventInfo.styles";
 
