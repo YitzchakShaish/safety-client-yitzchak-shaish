@@ -1,10 +1,10 @@
 import { Box, Grid, Typography } from '@mui/material';
-
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import StatCard from '../components/StatCard';
+import StatCard from '../components/common/StatCard';
 import { headerText } from '../styles/common';
+
 
 export default function HomePage() {
   return (
@@ -13,7 +13,15 @@ export default function HomePage() {
         direction: 'rtl',
         bgcolor: 'background.default',
         color: 'text.primary',
-        // border: '1px solid',
+        // border: '1px solid red',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        alignSelf: 'center',
+        alignContent: 'center',
+        minHeight: 'calc(100vh - 100px)',
+        margin: 0
       }}
     >
       <Typography variant="h6" sx={{ ...headerText, mb: 6 }}>
