@@ -1,7 +1,7 @@
 import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Grid } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
 import MyTextField from "../common/MyTextField";
-import { type SummaryInfo, injuryLevelArr } from "../../types/eventReport";
+import { type SummaryInfo, injuryLevelArr } from "../../types";
 import { validateTextField } from "../../utils/validate";
 
 

@@ -39,12 +39,13 @@ export default function Sidebar() {
           height: "calc(100vh - 4rem)",
           display: "flex",
           flexDirection: "column",
-          overflow: "hidden",
+          overflow: "auto",
           transition: "width 0.3s ease",
         },
         [theme.breakpoints.down("md")]: {
           "& .MuiDrawer-paper": {
             width: "clamp(6rem, 20vw, 12rem)",
+            overflow: "auto",
           },
         },
       }}

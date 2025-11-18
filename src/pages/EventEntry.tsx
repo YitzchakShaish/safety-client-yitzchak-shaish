@@ -64,7 +64,7 @@ export default function EventEntry() {
                 activeStep={activeStep}
                 sx={{
                     flexShrink: 0,
-                    mb: { xs: 1, sm: 2 },
+                    mb: 1,
                     '& .MuiStepLabel-label': {
                         fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }
                     }

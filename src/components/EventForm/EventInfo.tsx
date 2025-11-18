@@ -1,46 +1,44 @@
-import { FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, Box, TextField, useTheme } from "@mui/material";
+import { Grid, TextField, FormControl, InputLabel, Select, MenuItem, RadioGroup, FormControlLabel, Radio, Box, FormLabel } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
-import { categoryArr, eventResultArr, eventSeverityArr, type Location, locationArr, personalActivityTypeArr, unitActivityTypeArr, weatherConditionsArr } from "../../types/eventReport";
+import { optionsMap, fieldLabels } from "../../types";
 import MyTextField from "../common/MyTextField";
 import { validateTextField } from "../../utils/validate";
 import { dateTimeInputDarkModeSx } from "../../styles/eventInfo.styles";
+import { useTheme } from "@mui/material/styles";
+
+const SELECT_FIELDS = [
+  "unitActivityType",
+  "personalActivityType",
+  "category",
+  "eventSeverity",
+  "eventResult",
+  "weatherCondition",
+] as const;
 
 export default function EventInfo({ onCompleteChange }: { onCompleteChange: (valid: boolean) => void }) {
   const theme = useTheme();
   const { eventData, setEventData } = useEventForm();
-  const eventInfoArr = [unitActivityTypeArr, personalActivityTypeArr, categoryArr, eventSeverityArr, eventResultArr, weatherConditionsArr];
 
-  const handleChange = (field: keyof typeof eventData.eventInfo, value: string | null) => {
+  const handleChange = (field: keyof typeof eventData.eventInfo, value: string) => {
     const updated = {
       ...eventData,
       eventInfo: { ...eventData.eventInfo, [field]: value },
     };
     setEventData(updated);
 
-    const {
-      eventDate,
-      eventTime,
-      eventDescription,
-      unitActivityType,
-      personalActivityType,
-      category,
-      location,
-      eventSeverity,
-      eventResult,
-      weatherCondition,
-    } = updated.eventInfo;
-
+    const info = updated.eventInfo;
     const isValid =
-      eventDate !== "" &&
-      eventTime !== "" &&
-      eventDescription.trim() !== "" &&
-      unitActivityType !== "בחר/י" &&
-      personalActivityType !== "בחר/י" &&
-      category !== "בחר/י" &&
-      location !== "בחר/י" &&
-      eventSeverity !== "בחר/י" &&
-      eventResult !== "בחר/י" &&
-      weatherCondition !== "בחר/י";
+      info.eventDate !== "" &&
+      info.eventTime !== "" &&
+      info.eventDescription.trim() !== "" &&
+      info.unitActivityType !== "בחר/י" &&
+      info.personalActivityType !== "בחר/י" &&
+      info.category !== "בחר/י" &&
+      info.location !== "בחר/י" &&
+      info.eventSeverity !== "בחר/י" &&
+      info.eventResult !== "בחר/י" &&
+      info.weatherCondition !== "בחר/י";
+
     onCompleteChange(isValid);
   };
 
@@ -62,9 +60,9 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
                 ? "תאריך האירוע לא יכול להיות בעתיד"
                 : ""
           }
+          error={eventData.eventInfo.eventDate > new Date().toISOString().split("T")[0]}
         />
-
-      </Grid >
+      </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           label="שעת אירוע"
@@ -74,145 +72,66 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
           sx={dateTimeInputDarkModeSx(theme)}
           helperText={
             eventData.eventInfo.eventTime === ""
-              ? "שדה זה הוא חובה"
-              : ""
+            ? "שדה זה הוא חובה"
+            : ""
           }
           onChange={(e) => handleChange("eventTime", e.target.value)}
           type="time"
         />
+      </Grid>
 
-      </Grid >
-      <Grid size={{ xs: 12, sm: 12 }}>
-        <FormControl fullWidth>
-          <FormLabel id="location-label" sx={{ mb: 1 }}>
-            בחר מיקום אירוע
-          </FormLabel>
-
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "rgba(0, 0, 0, 0.23)",
-              borderRadius: 1,
-              p: 4,
-              "&:hover": {
-                borderColor: "black",
-              },
-            }}
-          >
+      <Grid size={12}>
+        <FormControl fullWidth required>
+          <FormLabel sx={{ mb: 1 }}>מיקום האירוע</FormLabel>
+          <Box sx={{ border: "1px solid rgba(0,0,0,0.23)", borderRadius: 1, p: 2, "&:hover": { borderColor: "black" } }}>
             <RadioGroup
               row
-              aria-required="true"
-              aria-labelledby="location-label"
-              name="location"
               value={eventData.eventInfo.location}
-              onChange={(e) => handleChange("location", e.target.value as Location)}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                width: "100%",
-              }}
+              onChange={(e) => handleChange("location", e.target.value)}
+              sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
             >
-              {locationArr.slice(1).map((loc) => (
-                <FormControlLabel
-                  key={loc}
-                  value={loc}
-                  control={<Radio />}
-                  label={loc}
-                />
+              {optionsMap.location.slice(1).map((loc) => (
+                <FormControlLabel key={loc} value={loc} control={<Radio />} label={loc} />
               ))}
             </RadioGroup>
           </Box>
         </FormControl>
       </Grid>
-
-      <Grid size={{ xs: 12, sm: 12 }}>
+      <Grid size={12}>
         <MyTextField
           label="תיאור האירוע"
           value={eventData.eventInfo.eventDescription}
           required
           validate={(v) => validateTextField(v, "תיאור האירוע", 30)}
           onChange={(val) => handleChange("eventDescription", val)}
-          multiline={true}
+          multiline
           rows={4}
-          type="text"
         />
       </Grid>
-      {eventInfoArr.map((arr, index) => (
-        <Grid key={index} size={{ xs: 12, sm: 6 }}>
-          <FormControl fullWidth required>
-            <InputLabel id={`select-label-${index}`}>
-              {arr === categoryArr
-                ? "קטגוריית אירוע"
-                : arr === unitActivityTypeArr
-                  ? "סוג פעילות יחידה"
-                  : arr === personalActivityTypeArr
-                    ? "סוג פעילות אישית"
-                    : arr === eventSeverityArr
-                      ? "חומרת האירוע"
-                      : arr === eventResultArr
-                        ? "תוצאת האירוע"
-                        : "תנאי מזג אוויר"}
-            </InputLabel>
+      {SELECT_FIELDS.map((field) => {
+        const options = optionsMap[field];
+        const value = eventData.eventInfo[field];
+        const label = fieldLabels[field];
 
-            <Select
-              labelId={`select-label-${index}`}
-              id={`select-${index}`}
-              value={
-                arr === categoryArr
-                  ? eventData.eventInfo.category
-                  : arr === unitActivityTypeArr
-                    ? eventData.eventInfo.unitActivityType
-                    : arr === personalActivityTypeArr
-                      ? eventData.eventInfo.personalActivityType
-                      : arr === eventSeverityArr
-                        ? eventData.eventInfo.eventSeverity
-                        : arr === eventResultArr
-                          ? eventData.eventInfo.eventResult
-                          : eventData.eventInfo.weatherCondition
-              }
-              label={
-                arr === categoryArr
-                  ? "קטגוריית אירוע"
-                  : arr === unitActivityTypeArr
-                    ? "סוג פעילות יחידה"
-                    : arr === personalActivityTypeArr
-                      ? "סוג פעילות אישית"
-                      : arr === eventSeverityArr
-                        ? "חומרת האירוע"
-                        : arr === eventResultArr
-                          ? "תוצאת האירוע"
-                          : "תנאי מזג אוויר"
-              }
-              onChange={(val) =>
-                handleChange(
-                  arr === categoryArr
-                    ? "category"
-                    : arr === unitActivityTypeArr
-                      ? "unitActivityType"
-                      : arr === personalActivityTypeArr
-                        ? "personalActivityType"
-                        : arr === eventSeverityArr
-                          ? "eventSeverity"
-                          : arr === eventResultArr
-                            ? "eventResult"
-                            : "weatherCondition",
-                  val.target.value as string
-                )
-              }
-            >
-              <MenuItem value={arr[0]} disabled>
-                {arr[0]}
-              </MenuItem>
-              {arr.slice(1).map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-      ))}
+        return (
+          <Grid key={field} size={{ xs: 12, sm: 6 }}>
+            <FormControl fullWidth required>
+              <InputLabel>{label}</InputLabel>
+              <Select
+                value={value}
+                label={label}
+                onChange={(e) => handleChange(field, e.target.value)}
+              >
+                {options.map((opt) => (
+                  <MenuItem key={opt} value={opt} disabled={opt === "בחר/י"}>
+                    {opt}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        );
+      })}
     </Grid>
   );
 }
