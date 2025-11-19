@@ -1,6 +1,7 @@
 import { Drawer, List, ListItem, ListItemButton, ListItemText, Box, Typography, Divider, ListItemIcon } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+
 //icons
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import EventIcon from '@mui/icons-material/Event';
@@ -16,11 +17,11 @@ export default function Sidebar() {
 
   const menuItems = [
     { label: "מבט על", path: "/", icon: <DashboardIcon /> },
-    { label: "הזנת אירוע", path: "/event-entry", icon: <EventIcon /> },
+    { label: "הזנת אירוע חדש", path: "/event-entry", icon: <EventIcon /> },
     { label: "ניהול אירועים", path: "/events", icon: <SearchIcon /> },
     { label: "דוחות BI", path: "/reports", icon: <BarChartIcon /> },
   ];
-
+  const location = useLocation();
   return (
     <Drawer
       variant="permanent"
@@ -67,6 +68,7 @@ export default function Sidebar() {
                 py: { xs: 0.5, lg: 1 },
                 display: 'flex',
                 justifyContent: 'space-around',
+                backgroundColor: location.pathname === item.path ? theme.palette.action.selected : "transparent",
               }}
               onClick={() => navigate(item.path)}
             >

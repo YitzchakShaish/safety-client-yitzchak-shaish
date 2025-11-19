@@ -3,7 +3,7 @@ import { useEventForm } from "../../hooks/useEventForm";
 import { optionsMap, fieldLabels } from "../../types";
 import MyTextField from "../common/MyTextField";
 import { validateTextField } from "../../utils/validate";
-import { dateTimeInputDarkModeSx } from "../../styles/eventInfo.styles";
+import { dateTimeInputDarkModeSx } from "../../styles/darkModeSx.styles";
 import { useTheme } from "@mui/material/styles";
 
 const SELECT_FIELDS = [
