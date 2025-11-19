@@ -18,7 +18,7 @@ export const innerBoxSx = (theme: Theme): SxProps<Theme> => ({
     mt: 1,
     background: theme.palette.background.reportFormInner!,
     borderRadius: 2,
-    p: 1,
+    p: 2,
     boxShadow: 1,
     flex: '1 1 auto',
     overflowY: 'auto',
