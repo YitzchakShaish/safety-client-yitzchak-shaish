@@ -1,4 +1,4 @@
-import { Box, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 import EventSearchBar from "../components/EventSearchBar";
 import EventsTable from "../components/eventsTable/EventsTable";
 import { mockEventReports } from "../mock/eventsData";

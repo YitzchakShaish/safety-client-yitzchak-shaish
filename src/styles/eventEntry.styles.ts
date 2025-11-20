@@ -2,9 +2,8 @@ import type { SxProps, Theme } from "@mui/material/styles";
 
 export const outerBoxSx = (theme: Theme): SxProps<Theme> => ({
     width: '100%',
-    height: 'calc(100vh - 128px)',
+    height: 'calc(100vh - 160px)',
     p: 2,
-    my: 2,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',

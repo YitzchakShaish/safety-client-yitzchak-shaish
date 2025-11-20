@@ -13,14 +13,12 @@ export default function HomePage() {
         direction: 'rtl',
         bgcolor: 'background.default',
         color: 'text.primary',
-        // border: '1px solid red',
         display: 'flex',
         justifyContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
         alignSelf: 'center',
         alignContent: 'center',
-        minHeight: 'calc(100vh - 100px)',
         margin: 0
       }}
     >

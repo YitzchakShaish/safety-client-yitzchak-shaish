@@ -31,7 +31,7 @@ export default function EventSearchBar({
   const theme = useTheme();
 
   return (
-    <Paper elevation={4} sx={{ p: 3, mt: 2, borderRadius: 3 }}>
+    <Paper elevation={4} sx={{ p: 3, mt: 2, borderRadius: 3, border: "1px solid #A7C7E7", width: "calc(100vw - 775px)" }}>
       <Grid container spacing={2}>
         <Grid size={6}>
           <TextField
