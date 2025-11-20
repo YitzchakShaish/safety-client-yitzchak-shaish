@@ -1,10 +1,10 @@
 
 /**
- * מאמת טקסט כללי לשדות טפסים
- * @param value - הערך שהוזן בשדה
- * @param fieldLabel - שם השדה שיופיע בהודעת השגיאה (לדוגמה: "תיאור האירוע")
- * @param minLength - אורך מינימום אופציונלי
- * @returns מחרוזת עם הודעת שגיאה או null אם תקין
+ * Validates a general text field.
+ * @param value - The text entered in the field.
+ * @param fieldLabel - The field name to show in the error message (for example: "Event description").
+ * @param minLength - Optional minimum length for the text.
+ * @returns A string with an error message, or null if the value is valid.
  */
 export function validateTextField(
   value: unknown,
@@ -46,6 +46,25 @@ export function validateFullName(value: unknown): string | null {
 
   if (!/^[\p{L}\s]+$/u.test(trimmed)) {
     return "השם יכול להכיל רק אותיות ורווחים";
+  }
+
+  return null;
+}
+
+export function validateDateRange(dateFrom: string | null, dateTo: string | null) {
+  const today = new Date().toISOString().split("T")[0];
+
+  if (dateFrom && dateFrom > today) {
+    return { field: "dateFrom", message: "תאריך לא יכול להיות בעתיד." };
+  }
+
+  if (dateTo && dateTo > today) {
+    return { field: "dateTo", message: "תאריך לא יכול להיות בעתיד." };
+  }
+
+  // Range check
+  if (dateFrom && dateTo && dateFrom > dateTo) {
+    return { field: "dateTo", message: "טווח תאריכים אינו חוקי"};
   }
 
   return null;

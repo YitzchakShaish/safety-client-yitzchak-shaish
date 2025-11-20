@@ -51,6 +51,8 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
           value={eventData.eventInfo.eventDate}
           required
           fullWidth
+          inputProps={{ max: new Date().toISOString().split("T")[0] }}
+
           onChange={(e) => handleChange("eventDate", e.target.value)}
           sx={dateTimeInputDarkModeSx(theme)}
           helperText={
