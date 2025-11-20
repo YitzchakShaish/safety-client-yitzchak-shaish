@@ -12,7 +12,6 @@ export interface Column {
     | "actions";
   label: string;
   minWidth?: number;
-  align?: "right" | "center";
 }
 
 export const columns: readonly Column[] = [
@@ -23,7 +22,7 @@ export const columns: readonly Column[] = [
   { id: "eventTime", label: "שעת אירוע", minWidth: 100 },
   { id: "fullName", label: "מדווח", minWidth: 130 },
   { id: "unit", label: "יחידה", minWidth: 130 },
-  { id: "actions", label: "פעולות", align: "center" },
+  { id: "actions", label: "פעולות" },
 ];
 
 export interface EventRowFields {
@@ -43,6 +42,6 @@ export interface EventRow extends EventRowFields {
 
 export interface EventFilters {
   q: string;          
-  dateFrom?: string | null; 
-  dateTo?: string | null;
+  dateFrom: string | null; 
+  dateTo: string | null;
 }

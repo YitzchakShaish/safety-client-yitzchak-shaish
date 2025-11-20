@@ -1,4 +1,4 @@
-import { Divider } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import EventSearchBar from "../components/EventSearchBar";
 import EventsTable from "../components/eventsTable/EventsTable";
 import { mockEventReports } from "../mock/eventsData";
@@ -54,7 +54,7 @@ export default function EventsDashboard() {
   }, [isSearching, tempFilters]);
 
   return (
-    <>
+    <Box width={"100%"} >
       <EventSearchBar
         filters={tempFilters}
         onFiltersChange={setTempFilters}
@@ -63,6 +63,6 @@ export default function EventsDashboard() {
       />
       <Divider sx={{ my: 2 }} />
       <EventsTable rows={filteredRows} />
-    </>
+    </Box>
   );
 }

@@ -7,7 +7,7 @@ export default function EventsTableHead() {
         {columns.map((column) => (
           <TableCell
             key={column.id}
-            align={column.align}
+            align={"right"}
             sx={{
               minWidth: column.minWidth,
               fontWeight: 600,

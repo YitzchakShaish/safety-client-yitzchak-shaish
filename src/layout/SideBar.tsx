@@ -60,7 +60,7 @@ export default function Sidebar() {
       <Divider />
 
       <List sx={{ mt: 1, flex: 1 }}>
-        {menuItems.map((item) => (
+        {menuItems.map((item) => (      
           <ListItem key={item.label} disablePadding>
             <ListItemButton
               sx={{
@@ -75,7 +75,7 @@ export default function Sidebar() {
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText
                 secondary={item.label}
-                primaryTypographyProps={{ fontSize: { xs: "0.75rem", lg: "0.875rem" } }}
+                secondaryTypographyProps={{ fontSize: "1rem" }}
               />
             </ListItemButton>
           </ListItem>

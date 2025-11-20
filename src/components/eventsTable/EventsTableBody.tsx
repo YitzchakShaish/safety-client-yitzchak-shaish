@@ -16,7 +16,7 @@ export  default function EventsTableBody({ rows, page, rowsPerPage, onRowClick }
             {columns.map((column) => {
               if (column.id === "actions") {
                 return (
-                  <TableCell key={column.id} align="center" sx={{ p: 1 }}>
+                  <TableCell key={column.id} align="right" sx={{ p: 1 }}>
                     <Button
                       size="small"
                       variant="outlined"
@@ -29,7 +29,7 @@ export  default function EventsTableBody({ rows, page, rowsPerPage, onRowClick }
               }
               const value = row[column.id];
               return (
-                <TableCell key={column.id} align={column.align}>
+                <TableCell key={column.id} align={"right"} >
                   {value}
                 </TableCell>
               );
