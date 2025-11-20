@@ -3,7 +3,7 @@ import HomePage from "./pages/HomePage";
 import Layout from "./layout/Layout";
 import EventsDashboard from "./pages/EventsDashboard";
 import EventEntry from "./pages/EventEntry";
-// import SingleEventPage from "./pages/SingleEventPage";
+import SingleEventPage from "./pages/SingleEventPage";
 
 
 export default function Router() {
@@ -14,7 +14,7 @@ export default function Router() {
           <Route index element={<HomePage />} />
            <Route path="/events" element={<EventsDashboard />} />
            <Route path="/event-entry" element={<EventEntry />} />
-           {/* <Route path="/events/:id" element={<SingleEventPage />} /> */}
+           <Route path="/events/:id" element={<SingleEventPage />} />
         </Route>
       </Routes>
    
