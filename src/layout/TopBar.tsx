@@ -7,16 +7,18 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useColorMode } from "../theme/ThemeContext";
+import { useNavigate } from "react-router";
 
 export default function TopBar() {
   const theme = useTheme();
-    const { toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode();
+  const navigate = useNavigate();
 
 
   return (
     <AppBar position="fixed" color="primary" sx={{ direction: "rtl", top: 0, left: 0, right: 0, zIndex: 1200, height: "4rem" }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Box sx={{ display: 'flex', alignItems: 'center',  mr: "clamp(0.5rem, 1vw, 2rem)" }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mr: "clamp(0.5rem, 1vw, 2rem)" }}>
           <Box component="img" src="/icon.png" alt="logo" sx={{ width: "clamp(3rem, 5vw, 4rem)" }} />
         </Box>
 
@@ -33,7 +35,7 @@ export default function TopBar() {
             <SettingsIcon />
           </IconButton>
 
-          <IconButton sx={topIconButton}>
+          <IconButton sx={topIconButton} onClick={() => navigate("auth")}>
             <AccountCircle />
           </IconButton>
         </Box>
