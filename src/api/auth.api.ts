@@ -1,7 +1,8 @@
 import type { AuthResponse } from "../types/authResponse";
+import { setToken } from "../utils/auth";
 
 
-const BASE_URL = "http://localhost:3000/auth"; 
+const BASE_URL = "http://localhost:3000/auth";
 
 export const signup = async (fullName: string, email: string): Promise<AuthResponse> => {
   try {
@@ -10,7 +11,6 @@ export const signup = async (fullName: string, email: string): Promise<AuthRespo
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fullName, email }),
     });
-
     const data = await res.json();
     return { success: res.ok, message: data.message, user: data.user };
   } catch (error) {
@@ -27,6 +27,10 @@ export const login = async (fullName: string, email: string): Promise<AuthRespon
     });
 
     const data = await res.json();
+    // console.log(data)
+    if (data?.token) {
+      setToken(data.token);
+    }
     return { success: res.ok, message: data.message, user: data.user };
   } catch (error) {
     return { success: false, message: "שגיאה בשרת" };

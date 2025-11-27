@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, TextField, Button, Paper, Typography, Link, Alert } from "@mui/material";
-import { login, signup } from "../api/auth"
+import { login, signup } from "../api/auth.api"
 import type { AuthResponse } from "../types/authResponse";
+import { useLocation, useNavigate } from "react-router";
+
+type Mode = "login" | "signup";
+type MessageType = "success" | "info" | "error";
 
 export default function LoginSignupPage() {
-    type Mode = "login" | "signup";
-    type MessageType = "success" | "info" | "error";
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [mode, setMode] = useState<Mode>("login");
     const [name, setName] = useState("");
@@ -18,22 +22,36 @@ export default function LoginSignupPage() {
         setMessageType(type);
         setTimeout(() => {
             setMessage(null);
+            if (type === "success") {
+                navigate("/")
+            }
             if (newMode) setMode(newMode);
         }, 3000);
     };
 
+    useEffect(() => {
+        if (location?.state?.message) {
+            showMessage(location.state.message, "error")
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location?.state?.message, navigate, location.pathname]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !email) return showMessage("אנא מלא/י את כל השדות הנדרשים", "error");
-
-        const action = mode === "login" ? login : signup;
-        const response: AuthResponse = await action(name, email);
+        let response: AuthResponse;
+        if (mode === "login") {
+            response = await login(name, email)
+        }
+        else {
+            response = await signup(name, email)
+        }
 
         if (!response.success) {
+            //More detailed tests are needed if there are other errors.
             const type: MessageType = mode === "login" ? "info" : "error";
             return showMessage(response.message, type, mode === "login" ? "signup" : "login");
         }
-
         const type: MessageType = mode === "login" ? "success" : "info";
         showMessage(response.message, type, mode === "signup" ? "login" : undefined);
         setName("");
