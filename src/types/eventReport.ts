@@ -18,7 +18,6 @@ export interface ReportInfo {
   subUnit: string;
   reportDate: Date;
   reportTime: string;
-  eventStatus: EventStatus;
 }
 
 export interface EventInfo {
@@ -39,6 +38,7 @@ export interface SummaryInfo {
   injuryDetails: string;
   recommendations: string;
   approval: boolean;
+  eventStatus: EventStatus;
 }
 
 export interface EventReport {

@@ -90,6 +90,9 @@ export default function SummaryInfoStep({
           label="אני מאשר/ת את כל הנתונים"
         />
       </Grid>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <MyTextField label="סטטוס טיפול" value={eventData.summaryInfo.eventStatus} readOnly color="error" />
+      </Grid>
     </Grid>
   );
 }

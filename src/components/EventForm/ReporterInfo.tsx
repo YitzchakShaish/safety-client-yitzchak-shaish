@@ -85,10 +85,6 @@ export default function ReporterInfo({
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField label="סטטוס טיפול" value={eventData.reportInfo.eventStatus} readOnly color="error" />
-      </Grid>
-
-      <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="תאריך דיווח"
           value={eventData.reportInfo.reportDate.toLocaleDateString("he-IL")} readOnly color="secondary"

@@ -18,7 +18,6 @@ export const EventFormContext = createContext<EventFormContextType | undefined>(
       subUnit: "",
       reportDate: new Date(),
       reportTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      eventStatus: "לא טופל",
     },
     eventInfo: {
       eventDate: new Date().toISOString().split("T")[0],
@@ -33,6 +32,7 @@ export const EventFormContext = createContext<EventFormContextType | undefined>(
       weatherCondition: "בחר/י",
     },
     summaryInfo: {
+      eventStatus: "לא טופל",
       injuryLevel: "בחר/י",
       injuryDetails: "",
       recommendations: "",
