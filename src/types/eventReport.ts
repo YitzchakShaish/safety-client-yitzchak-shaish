@@ -34,15 +34,15 @@ export interface EventInfo {
 }
 
 export interface SummaryInfo {
-  injuryLevel: InjuryLevel;
-  injuryDetails: string;
+  injuryLevel?: InjuryLevel;
+  injuryDetails?: string;
   recommendations: string;
   approval: boolean;
   eventStatus: EventStatus;
 }
 
 export interface EventReport {
-  reportInfo: ReportInfo;
+  reporterInfo: ReportInfo;
   eventInfo: EventInfo;
   summaryInfo: SummaryInfo;
 }
