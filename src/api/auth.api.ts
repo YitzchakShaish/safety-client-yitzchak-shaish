@@ -1,5 +1,5 @@
 import type { AuthResponse } from "../types/authResponse";
-import { setToken } from "../utils/auth";
+import { setToken, setUser } from "../utils/storage";
 
 
 const BASE_URL = "http://localhost:3000/auth";
@@ -30,6 +30,10 @@ export const login = async (fullName: string, email: string): Promise<AuthRespon
     // console.log(data)
     if (data?.token) {
       setToken(data.token);
+    }
+     if (data?.user) {
+      console.log(data.user)
+      setUser(data.user);
     }
     return { success: res.ok, message: data.message, user: data.user };
   } catch (error) {

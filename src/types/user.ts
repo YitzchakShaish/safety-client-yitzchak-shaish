@@ -1,8 +1,11 @@
 
 export type UserProfileCardProps = {
-    name: string;
+    fullName: string;
     rank: string;
-    avatarSrc: string;
     email?: string;
+    id: string;
     personalNumber?: number;
+    avatarSrc?: string;
+
+
 };

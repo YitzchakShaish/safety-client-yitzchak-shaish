@@ -1,5 +1,5 @@
 import { Outlet, Navigate } from "react-router";
-import { isAuthenticated } from "../utils/auth";
+import { isAuthenticated } from "../utils/storage";
 
 export default function ProtectedRoute() {
     const hasToken = isAuthenticated();

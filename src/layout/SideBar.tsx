@@ -10,11 +10,13 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import UserProfileCard from "./UserProfileCard";
 import { sidebarItemButton } from "../styles/common";
 import { sidebarHeaderStyle } from "../styles/sidebar.styles";
+import { getUser } from "../utils/storage";
 
 export default function Sidebar() {
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const user = getUser();
   const menuItems = [
     { label: "מבט על", path: "/", icon: <DashboardIcon /> },
     { label: "הזנת אירוע חדש", path: "/event-entry", icon: <EventIcon /> },
@@ -60,7 +62,7 @@ export default function Sidebar() {
       <Divider />
 
       <List sx={{ mt: 1, flex: 1 }}>
-        {menuItems.map((item) => (      
+        {menuItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton
               sx={{
@@ -83,21 +85,23 @@ export default function Sidebar() {
       </List>
 
       <Divider sx={{ width: "100%" }} />
-      <Box sx={sidebarHeaderStyle(theme)}>
-        <Typography variant="h6" sx={{ color: "primary.main" }}>
-          פרטי משתמש
-        </Typography>
-      </Box>
 
-      <Divider sx={{ width: "100%", mb: 1 }} />
-      <Box sx={{ px: { xs: 1, sm: 0 }, pb: { xs: 1, sm: 0 } }}>
-        <UserProfileCard
-          name="אבי"
-          rank='אל"מ'
-          avatarSrc="1.png"
-          personalNumber={770770}
-        />
-      </Box>
+      {user && (
+        <>
+          <Box sx={sidebarHeaderStyle(theme)}>
+            <Typography variant="h6" sx={{ color: "primary.main" }}>
+              פרטי משתמש
+            </Typography>
+          </Box>
+
+          <Divider sx={{ width: "100%", mb: 1 }} />
+
+          <Box sx={{ px: { xs: 1, sm: 0 }, pb: { xs: 1, sm: 0 } }}>
+            <UserProfileCard {...user} />
+          </Box>
+        </>
+      )}
+
     </Drawer>
   );
 }

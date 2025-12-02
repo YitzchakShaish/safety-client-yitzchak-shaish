@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router";
 import { truncateText } from "../styles/common";
 
-export default function UserProfileCard({ name, rank, avatarSrc, personalNumber }: UserProfileCardProps) {
+export default function UserProfileCard({ fullName, rank, id }: UserProfileCardProps) {
     const theme = useTheme();
     const navigate = useNavigate();
     return (
@@ -18,7 +18,7 @@ export default function UserProfileCard({ name, rank, avatarSrc, personalNumber 
                 borderRadius: "0.8rem",
                 cursor: "pointer",
             }}
-            onClick={() => navigate(`/user/${personalNumber}`)}
+            onClick={() => navigate(`/user/${id}`)}
         >
             <Paper
                 elevation={4}
@@ -41,8 +41,8 @@ export default function UserProfileCard({ name, rank, avatarSrc, personalNumber 
             >
 
                 <Avatar
-                    src={avatarSrc}
-                    alt={name}
+                    src={ "1.png"}
+                    alt={fullName}
                     sx={{
                         width: "clamp(3rem, 6vw, 4rem)",
                         height: "clamp(3rem, 6vw, 4rem)",
@@ -57,7 +57,7 @@ export default function UserProfileCard({ name, rank, avatarSrc, personalNumber 
                         fontSize: "clamp(0.9rem, 1.2vw, 1.2rem)",
                     }}
                 >
-                    {name}
+                    {fullName}
                 </Typography>
                 <Typography
                     variant="body2"
