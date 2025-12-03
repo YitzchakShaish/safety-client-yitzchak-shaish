@@ -10,13 +10,15 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import UserProfileCard from "./UserProfileCard";
 import { sidebarItemButton } from "../styles/common";
 import { sidebarHeaderStyle } from "../styles/sidebar.styles";
-import { getUser } from "../utils/storage";
+import { useUser } from "../hooks/useUser";
 
 export default function Sidebar() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { user } = useUser()
 
-  const user = getUser();
+
+
   const menuItems = [
     { label: "מבט על", path: "/", icon: <DashboardIcon /> },
     { label: "הזנת אירוע חדש", path: "/event-entry", icon: <EventIcon /> },

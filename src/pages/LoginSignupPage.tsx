@@ -3,6 +3,7 @@ import { Box, TextField, Button, Paper, Typography, Link, Alert } from "@mui/mat
 import { login, signup } from "../api/auth.api"
 import type { AuthResponse } from "../types/authResponse";
 import { useLocation, useNavigate } from "react-router";
+import { useUser } from "../hooks/useUser";
 
 type Mode = "login" | "signup";
 type MessageType = "success" | "info" | "error";
@@ -10,6 +11,7 @@ type MessageType = "success" | "info" | "error";
 export default function LoginSignupPage() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { updateUser } = useUser();
 
     const [mode, setMode] = useState<Mode>("login");
     const [name, setName] = useState("");
@@ -52,6 +54,11 @@ export default function LoginSignupPage() {
             const type: MessageType = mode === "login" ? "info" : "error";
             return showMessage(response.message, type, mode === "login" ? "signup" : "login");
         }
+
+        if (mode === "login" && response.success) {
+            updateUser(response.user)
+        }
+        
         const type: MessageType = mode === "login" ? "success" : "info";
         showMessage(response.message, type, mode === "signup" ? "login" : undefined);
         setName("");

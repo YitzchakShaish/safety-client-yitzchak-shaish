@@ -4,9 +4,11 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import StatCard from '../components/common/StatCard';
 import { headerText } from '../styles/common';
+import { useUser } from "../hooks/useUser";
 
 
 export default function HomePage() {
+  const {user} = useUser();
   return (
     <Box
       sx={{
@@ -23,7 +25,7 @@ export default function HomePage() {
       }}
     >
       <Typography variant="h6" sx={{ ...headerText, mb: 6 }}>
-        משתמש יקר, ברוך הבא למערכת!
+       {user? user.fullName.split(" ")[0] +" היקר/ה!, ברוך הבא למערכת!":" משתמש יקר, ברוך הבא למערכת!"}
       </Typography>
       <Grid container spacing={2} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, md: 4 }} >

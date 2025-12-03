@@ -8,12 +8,14 @@ import { useEventForm } from '../hooks/useEventForm';
 import { createEventReport } from '../api/eventReport.api';
 import StatusAlert from "../components/common/StatusAlert";
 import { initialEventData } from '../context/EventFormContext';
+import { useUser } from "../hooks/useUser";
 
 
 const steps = ["פרטי דיווח", "פרטי אירוע", "מסקנות והגשה"];
 const stepComponents = [ReporterInfo, EventInfo, SummaryInfo];
 
 export default function EventEntry() {
+    const { updateUser } = useUser()
     const theme = useTheme();
     const [activeStep, setActiveStep] = useState(0);
     const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
@@ -74,7 +76,8 @@ export default function EventEntry() {
                 status: response.status,
                 message: [response.message]
             });
-            handleReset();
+            updateUser(response.user)
+            // handleReset();
         } else {
             setAlert({
                 open: true,
