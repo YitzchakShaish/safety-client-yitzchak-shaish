@@ -1,4 +1,4 @@
-import type { EventReport } from "../types";
+import type { EventReport, EventReportWithId } from "../types";
 import { getToken } from "../utils/storage";
 
 const BASE_URL = "http://localhost:3000";
@@ -35,7 +35,7 @@ export async function createEventReport(data: EventReport) {
         return { status: res.status, message: result.message, success: true, user: result.user };
 
     } catch (error: any) {
-        return { status: 0, message: [error.message] };
+        return { status: 0, message: error.message };
     }
 }
 
@@ -71,4 +71,52 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     } catch { }
 
     return result;
+}
+
+export async function updateEventReport(data:EventReportWithId) {
+    
+    try {
+        const res = await fetch(`${BASE_URL}/event-report`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+
+        let result: any = {};
+        try {
+            result = await res.json();
+
+        } catch { }
+
+        return { status: res.status, message: result.message, success: true, user: result.user };
+
+    } catch (error: any) {
+        return { status: 0, message: error.message };
+    }
+}
+export async function deleteEventReport(id:string) {
+    
+    try {
+        const res = await fetch(`${BASE_URL}/event-report/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+        });
+
+        let result: any = {};
+        try {
+            result = await res.json();
+        } catch { }
+
+        return { status: res.status, message: result.message, user: result.user };
+
+    } catch (error: any) {
+        return { status: 0, message: error.message };
+    }
 }

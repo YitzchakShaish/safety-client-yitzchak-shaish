@@ -1,5 +1,5 @@
 import { TextField, Select, MenuItem, Typography } from "@mui/material";
-import { optionsMap } from "../../types";
+import { optionsMap, optionsStatus } from "../../types";
 
 export default function EditableField({ field, value, editable, onChange }: {
   field: string;
@@ -8,6 +8,7 @@ export default function EditableField({ field, value, editable, onChange }: {
   onChange: (value: any) => void;
 }) {
   const options = optionsMap[field];
+  const optionsS = optionsStatus[field];
 
 // If the field is not editable, just display its value nicely (date or fallback text)
   if (!editable) {
@@ -19,7 +20,16 @@ export default function EditableField({ field, value, editable, onChange }: {
   if (options) {
     return (
       <Select fullWidth value={value || ""} onChange={(e) => onChange(e.target.value)}>
-        {options.map((opt) => (
+        {options.slice(1).map((opt) => (
+          <MenuItem key={opt} value={opt}>{opt}</MenuItem>
+        ))}
+      </Select>
+    );
+  }
+  if (optionsS) {
+    return (
+      <Select fullWidth value={value || ""} onChange={(e) => onChange(e.target.value)}>
+        {optionsS.map((opt) => (
           <MenuItem key={opt} value={opt}>{opt}</MenuItem>
         ))}
       </Select>

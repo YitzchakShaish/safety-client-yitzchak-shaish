@@ -19,8 +19,10 @@ export const optionsMap: Record<string, readonly string[]> = {
   eventResult: eventResultArr,
   injuryLevel: injuryLevelArr,
   weatherCondition: weatherConditionsArr,
-  eventStatus: eventStatusArr,
 };
+export const optionsStatus: Record<string, readonly string[]> = {
+   eventStatus: eventStatusArr,
+}
 
 export const fieldLabels: Record<string, string> = {
   fullName: "שם המדווח",

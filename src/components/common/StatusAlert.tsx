@@ -3,9 +3,9 @@ import { Snackbar, Alert } from "@mui/material";
 
 interface StatusAlertProps {
   open: boolean;
-  statusCode: number;         
-  message?: string[];       
-  duration?: number;    
+  statusCode: number;
+  message?: string[];
+  duration?: number;
   onClose: () => void;
 }
 
@@ -61,8 +61,12 @@ export default function StatusAlert({
       <Alert
         onClose={onClose}
         severity={severity}
-        variant="filled"
-        sx={{ width: "100%", whiteSpace: "pre-line", boxShadow: 3 }}
+        variant="standard"
+        sx={{
+          width: "100%", whiteSpace: "pre-line", boxShadow: 3, "& .MuiAlert-action": {
+            marginRight: 1.5,
+          }
+        }}
       >
         {buildMessage()}
       </Alert>

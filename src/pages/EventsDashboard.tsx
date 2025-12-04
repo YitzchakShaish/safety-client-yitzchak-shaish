@@ -53,8 +53,8 @@ export default function EventsDashboard() {
         }));
 
         setAllRows(rows);
-        setTotal(pagination.total);
-        setPage(pagination.page)
+        setTotal(pagination?.total);
+        setPage(pagination?.page)
       } catch (err) {
         console.error(err);
       } finally {

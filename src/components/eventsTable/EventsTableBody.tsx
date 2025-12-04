@@ -11,7 +11,7 @@ export default function EventsTableBody({
   return (
     <TableBody>
       {rows
-        .map((row) => (
+        ?.map((row) => (
           <TableRow hover key={row.id}>
             {columns.map((column) => {
               if (column.id === "actions") {
