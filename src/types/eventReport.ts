@@ -48,5 +48,5 @@ export interface EventReport {
 }
 
 export interface EventReportWithId extends EventReport {
-  id: number;
+  id: string;
 }

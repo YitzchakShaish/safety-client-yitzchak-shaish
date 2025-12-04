@@ -26,7 +26,7 @@ export default function SingleEventPage() {
 
   // Updates a specific field in a given section immutably and marks that there are unsaved changes
   const handleChange = (
-    section: "reportInfo" | "eventInfo" | "summaryInfo",
+    section: "reporterInfo" | "eventInfo" | "summaryInfo",
     field: string,
     value: any
   ) => {
@@ -45,14 +45,14 @@ export default function SingleEventPage() {
 
   return (
     <Box padding={2}>
-      <EventHeader eventId={eventData.id} status={eventData.reportInfo.eventStatus} />
+      <EventHeader eventId={eventData.id} status={eventData.summaryInfo.eventStatus} />
 
       <ReportSection
         title="מידע על המדווח"
-        data={eventData.reportInfo}
+        data={eventData.reporterInfo}
         section="reportInfo"
         editableFields={editableFields}
-        onChange={(field, value) => handleChange("reportInfo", field, value)}
+        onChange={(field, value) => handleChange("reporterInfo", field, value)}
       />
 
       <ReportSection

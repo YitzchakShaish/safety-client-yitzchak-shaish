@@ -1,10 +1,9 @@
 import { Box, Divider } from "@mui/material";
 import EventSearchBar from "../components/EventSearchBar";
 import EventsTable from "../components/eventsTable/EventsTable";
-import { mockEventReports } from "../mock/eventsData";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { EventFilters, EventRow } from "../types/eventsTable";
-import { filterEventRows } from "../utils/filterEvents";
+import { getAllEventReports } from "../api/eventReport.api";
 
 export default function EventsDashboard() {
   // State for search filters
@@ -21,25 +20,52 @@ export default function EventsDashboard() {
   });
 
   const [isSearching, setIsSearching] = useState(false);
-  // Prepare all rows from mock data
-  const allRows: EventRow[] = useMemo(() => {
-    return mockEventReports.map((r) => ({
-      id: r.id,
-      eventNumber: `EV-${r.id.toString().padStart(4, "0")}`,
-      eventStatus: r.reportInfo.eventStatus,
-      category: r.eventInfo.category,
-      eventDate: r.eventInfo.eventDate,
-      eventTime: r.eventInfo.eventTime,
-      fullName: r.reportInfo.fullName,
-      unit: r.reportInfo.unit,
-      fullData: r,
-    }));
-  }, []);
 
-  // Filtered rows based on active filters
-  const filteredRows = useMemo(() => {
-    return filterEventRows(allRows, activeFilters);
-  }, [allRows, activeFilters]);
+  const [allRows, setAllRows] = useState<EventRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    async function fetchReports() {
+      setLoading(true);
+      try {
+        const { data, pagination } = await getAllEventReports({
+          page,
+          perPage,
+          q: activeFilters.q,
+          dateFrom: activeFilters.dateFrom,
+          dateTo: activeFilters.dateTo
+        });
+
+        const rows: EventRow[] = (data as any[])?.map(r => ({
+          id: r.id,
+          eventNumber: `EV-${r.id.toString().toUpperCase().slice(0, 4)}`,
+          eventStatus: r.summaryInfo.eventStatus,
+          category: r.eventInfo.category,
+          eventDate: r.eventInfo.eventDate,
+          eventTime: r.eventInfo.eventTime,
+          fullName: r.reporterInfo.fullName,
+          unit: r.reporterInfo.unit,
+          fullData: r,
+        }));
+
+        setAllRows(rows);
+        setTotal(pagination.total);
+        setPage(pagination.page)
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchReports();
+  }, [page, perPage, activeFilters]);
+
+
 
   // Handle search toggle
   const handleSearchToggle = useCallback(() => {
@@ -62,7 +88,18 @@ export default function EventsDashboard() {
         isSearching={isSearching}
       />
       <Divider sx={{ my: 2 }} />
-      <EventsTable rows={filteredRows} />
+      <EventsTable
+        rows={allRows}
+        page={page}
+        perPage={perPage}
+        total={total}
+        onPageChange={setPage}
+        onPerPageChange={(n) => {
+          setPerPage(n);
+          setPage(1);
+        }}
+      />
+
     </Box>
   );
 }

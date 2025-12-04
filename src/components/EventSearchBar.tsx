@@ -49,7 +49,7 @@ export default function EventSearchBar({
             variant="outlined"
             size="small"
             InputLabelProps={{ shrink: true }}
-
+            disabled={isSearching}
           />
         </Grid>
         <Grid size={2}>
@@ -65,6 +65,7 @@ export default function EventSearchBar({
             sx={dateTimeInputDarkModeSx(theme)}
             error={dateError?.field === "dateFrom"}
             helperText={dateError?.field === "dateFrom" ? dateError.message : ""}
+            disabled={isSearching}
           />
         </Grid>
         <Grid size={2}>
@@ -80,6 +81,7 @@ export default function EventSearchBar({
             sx={dateTimeInputDarkModeSx(theme)}
             error={dateError?.field === "dateTo"}
             helperText={dateError?.field === "dateTo" ? dateError.message : ""}
+            disabled={isSearching}
           />
         </Grid>
 
@@ -93,7 +95,8 @@ export default function EventSearchBar({
             startIcon={isSearching ? <ClearIcon /> : <SearchIcon />}
             onClick={onSearchToggle}
             sx={{
-              height: 40, fontWeight: "bold", display: "flex", justifyContent: "space-around", opacity: hasChanges && !dateError ? 1 : 0.5  }}
+              height: 40, fontWeight: "bold", display: "flex", justifyContent: "space-around", opacity: hasChanges && !dateError ? 1 : 0.5
+}}
           >
             {isSearching ? "נקה חיפוש" : "חפש"}
           </Button>
