@@ -12,7 +12,7 @@ export const EventFormContext = createContext<EventFormContextType | undefined>(
 );
 export const initialEventData: EventReport = {
   reporterInfo: {
-    fullName: getUser().fullName || "",
+    fullName: getUser()?.fullName || "",
     phone: "",
     position: "",
     unit: "",

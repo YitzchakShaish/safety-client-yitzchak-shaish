@@ -1,5 +1,5 @@
 
-import { Paper, Table, TableContainer, TablePagination } from "@mui/material";
+import { Paper, Table, TableContainer, TablePagination, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import type { EventRow } from "../../types";
 import EventsTableHead from "./EventsTableHead";
@@ -37,18 +37,21 @@ export default function EventsTable({
           />
         </Table>
       </TableContainer>
-
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={total}
-        rowsPerPage={perPage}
-        page={page - 1}       
-        labelRowsPerPage="שורות בעמוד:"
-        labelDisplayedRows={({ from, to, count }) => `${from}–${to} מתוך ${count}`}
-        onPageChange={(_, newPage) => onPageChange(newPage + 1)}
-        onRowsPerPageChange={(e) => onPerPageChange(+e.target.value)}
-      />
+      {rows ?
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={total}
+          rowsPerPage={perPage}
+          page={page - 1}
+          labelRowsPerPage="שורות בעמוד:"
+          labelDisplayedRows={({ from, to, count }) => `${from}–${to} מתוך ${count}`}
+          onPageChange={(_, newPage) => onPageChange(newPage + 1)}
+          onRowsPerPageChange={(e) => onPerPageChange(+e.target.value)}
+        /> : <Typography variant="h6" align="center" color="error">
+          אין נתונים להצגה
+        </Typography>
+      }
     </Paper>
   );
 }
