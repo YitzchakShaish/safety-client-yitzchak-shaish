@@ -32,7 +32,7 @@ export async function createEventReport(data: EventReport) {
 
         } catch { }
 
-        return { status: res.status, message: result.message, success: true, user: result.user };
+        return { status: res.status, message: result.message, success: true, user: result.user, id: result.data.id };
 
     } catch (error: any) {
         return { status: 0, message: error.message };

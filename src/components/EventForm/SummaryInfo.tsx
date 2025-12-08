@@ -3,12 +3,13 @@ import { useEventForm } from "../../hooks/useEventForm";
 import MyTextField from "../common/MyTextField";
 import { type SummaryInfo, injuryLevelArr } from "../../types";
 import { validateTextField } from "../../utils/validate";
+import ImageUploader from "../common/ImageUploader";
 
 
-export default function SummaryInfoStep({
-  onCompleteChange,
+export default function SummaryInfo({
+  onCompleteChange, images, setImages,
 }: {
-  onCompleteChange: (valid: boolean) => void;
+  onCompleteChange: (valid: boolean) => void; images: File[], setImages: (files: File[]) => void;
 }) {
   const { eventData, setEventData } = useEventForm();
 
@@ -69,7 +70,7 @@ export default function SummaryInfoStep({
 
           <MyTextField
             label="פרטי פגיעות"
-            value={eventData.summaryInfo.injuryDetails}
+            value={String(eventData.summaryInfo.injuryDetails)}
             required
             validate={(v) => validateTextField(v, "פרטי פגיעות", 10)}
             onChange={(val) => handleChange("injuryDetails", val)}
@@ -78,6 +79,8 @@ export default function SummaryInfoStep({
           />
         </Grid>)
       }
+
+      <ImageUploader images={images} setImages={setImages}></ImageUploader>
       <Grid size={{ xs: 12 }}>
         <FormControlLabel
           control={
