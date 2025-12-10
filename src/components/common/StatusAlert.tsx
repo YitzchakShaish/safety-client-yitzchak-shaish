@@ -33,16 +33,16 @@ export default function StatusAlert({
 
     switch (statusCode) {
       case 400:
-        return message.length ? message.join("\n") : "שגיאת בקשה — בדוק את השדות";
+        return message.length ? message : "שגיאת בקשה — בדוק את השדות";
       case 401:
-        return message.length ? message.join("\n") : "אין אימות — התחבר מחדש";
+        return message.length ? message : "אין אימות — התחבר מחדש";
       case 403:
-        return message.length ? message.join("\n") : "אין הרשאה לבצע את הפעולה";
+        return message.length ? message : "אין הרשאה לבצע את הפעולה";
       case 0:
-        return message.length ? message.join("\n") : "שגיאת רשת — בדוק חיבור אינטרנט";
+        return message.length ? message : "שגיאת רשת — בדוק חיבור אינטרנט";
       default:
         if (statusCode >= 500) return "שגיאת שרת פנימית — נסה שוב מאוחר יותר";
-        return message.length ? message.join("\n") : "שגיאה לא צפויה";
+        return message.length ? message : "שגיאה לא צפויה";
     }
   };
 

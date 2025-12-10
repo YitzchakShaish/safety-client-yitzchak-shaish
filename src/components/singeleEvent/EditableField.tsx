@@ -13,7 +13,7 @@ export default function EditableField({ field, value, editable, onChange }: {
 // If the field is not editable, just display its value nicely (date or fallback text)
   if (!editable) {
   const displayValue = value instanceof Date ? value.toISOString().split("T")[0] : value ?? "אין נתונים";
-    return <Typography>{displayValue}</Typography>;
+    return <Typography overflow={"auto"}>{displayValue}</Typography>;
   }
 
 // If the field has predefined options, show a dropdown select

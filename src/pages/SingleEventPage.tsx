@@ -6,14 +6,17 @@ import EventHeader from "../components/singeleEvent/EventHeader";
 import ReportSection from "../components/singeleEvent/ReportSection";
 import { deleteEventReport, updateEventReport } from "../api/eventReport.api";
 import StatusAlert from "../components/common/StatusAlert";
+import EventImagesView from "../components/common/EventImagesView";
 
 
 export default function SingleEventPage() {
+
   const location = useLocation();
+  const isEditing = new URLSearchParams(location.search).get("edit") === "true";
   const navigate = useNavigate();
   const { event } = location.state as { event: EventReportWithId };
   let userLevel = "high";
-  // userLevel = "low"; // for testing
+  userLevel = "low"; // for testing
   const [alert, setAlert] = useState<{
     open: boolean;
     status: number;
@@ -48,49 +51,79 @@ export default function SingleEventPage() {
     console.log("saved:", eventData);
     const response = await updateEventReport(eventData)
     console.log(response)
-    if (response.status=200) {
+    if (response.status === 200) {
       setAlert({
         open: true,
         status: response.status,
         message: [response.message]
       });
       setHasChanges(false)
-        } else {
-            setAlert({
-                open: true,
-                status: response.status,
-                message: response.message || []
-            });
-        }
+      toggleEditing()
+    } else {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: response.message || []
+      });
+    }
   };
+
+  // TODO: Deleting images
   async function handleDelete() {
+    const confirmed = window.confirm("אתה בטוח שברצונך למחוק את האירוע הזה?");
+    if (!confirmed) return;
     const response = await deleteEventReport(eventData.id)
     console.log(response)
-      if (response.status=204) {
-            setAlert({
-                open: true,
-                status: response.status,
-                message: [response.message]
-            });
-            navigate("/")
-        } else {
-            setAlert({
-                open: true,
-                status: response.status,
-                message: response.message || []
-            });
-        }
+    if (response.status === 200) {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: [response.message]
+      });
+      setTimeout(() => {
+        navigate("/events");
+      }, 3000);
+
+    } else {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: response.message || []
+      });
+    }
   };
+
+  function toggleEditing() {
+    const params = new URLSearchParams(location.search);
+
+    if (isEditing) {
+      params.delete("edit");
+    } else {
+      params.set("edit", "true");
+    }
+
+    navigate(`?${params.toString()}`, {
+      replace: true,
+      state: { event }
+    });
+  }
 
   return (
     <Box padding={2}>
       <EventHeader eventId={eventData.id} status={eventData.summaryInfo.eventStatus} />
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button variant="outlined" onClick={toggleEditing}>
+          {isEditing ? "סיום עריכה" : "עריכה"}
+        </Button>
+      </Box>
+
+
 
       <ReportSection
         title="מידע על המדווח"
         data={eventData.reporterInfo}
         section="reportInfo"
-        editableFields={editableFields}
+        editableFields={isEditing ? editableFields : []}
         onChange={(field, value) => handleChange("reporterInfo", field, value)}
       />
 
@@ -98,7 +131,7 @@ export default function SingleEventPage() {
         title="פרטי האירוע"
         data={eventData.eventInfo}
         section="eventInfo"
-        editableFields={editableFields}
+        editableFields={isEditing ? editableFields : []}
         onChange={(field, value) => handleChange("eventInfo", field, value)}
       />
 
@@ -106,11 +139,12 @@ export default function SingleEventPage() {
         title="סיכום ונפגעים"
         data={eventData.summaryInfo}
         section="summaryInfo"
-        editableFields={editableFields}
+        editableFields={isEditing ? editableFields : []}
         onChange={(field, value) => handleChange("summaryInfo", field, value)}
       />
+      {eventData?.images.length > 0 && <EventImagesView images={eventData.images}></EventImagesView>}
 
-      <Button
+      {isEditing && <Button
         variant="contained"
         size="large"
         color="primary"
@@ -119,14 +153,13 @@ export default function SingleEventPage() {
         disabled={!hasChanges}
       >
         שמירת שינויים
-      </Button>
+      </Button>}
       <Button
         variant="contained"
         size="large"
         color="error"
         sx={{ mt: 3, px: 6, display: "block", mx: "auto", opacity: hasChanges ? 1 : 0.5 }}
         onClick={handleDelete}
-        disabled={!hasChanges}
       >
         מחיקת אירוע
       </Button>

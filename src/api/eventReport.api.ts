@@ -73,8 +73,15 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     return result;
 }
 
-export async function updateEventReport(data:EventReportWithId) {
-    
+export async function updateEventReport(data: EventReportWithId) {
+    const payload = {
+        id: data.id,
+        eventInfo: { ...data.eventInfo },
+        reporterInfo: { ...data.reporterInfo },
+        summaryInfo: { ...data.summaryInfo },
+    }
+
+
     try {
         const res = await fetch(`${BASE_URL}/event-report`, {
             method: "PUT",
@@ -83,7 +90,7 @@ export async function updateEventReport(data:EventReportWithId) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(payload)
         });
 
         let result: any = {};
@@ -98,8 +105,8 @@ export async function updateEventReport(data:EventReportWithId) {
         return { status: 0, message: error.message };
     }
 }
-export async function deleteEventReport(id:string) {
-    
+export async function deleteEventReport(id: string) {
+
     try {
         const res = await fetch(`${BASE_URL}/event-report/${id}`, {
             method: "DELETE",

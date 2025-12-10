@@ -49,4 +49,5 @@ export interface EventReport {
 
 export interface EventReportWithId extends EventReport {
   id: string;
+  images: {id: string, fileName: string, filePath: string}[];
 }
