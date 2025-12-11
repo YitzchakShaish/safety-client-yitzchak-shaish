@@ -6,7 +6,7 @@ import EventHeader from "../components/singeleEvent/EventHeader";
 import ReportSection from "../components/singeleEvent/ReportSection";
 import { deleteEventReport, updateEventReport } from "../api/eventReport.api";
 import StatusAlert from "../components/common/StatusAlert";
-import EventImagesView from "../components/common/EventImagesView";
+import EventImagesView from "../components/singeleEvent/EventImagesView";
 
 
 export default function SingleEventPage() {
@@ -68,7 +68,6 @@ export default function SingleEventPage() {
     }
   };
 
-  // TODO: Deleting images
   async function handleDelete() {
     const confirmed = window.confirm("אתה בטוח שברצונך למחוק את האירוע הזה?");
     if (!confirmed) return;
