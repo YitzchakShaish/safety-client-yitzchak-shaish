@@ -1,10 +1,11 @@
 import { Outlet, Navigate } from "react-router";
-import { isAuthenticated } from "../utils/storage";
+import { useUser } from "../hooks/useUser";
+
 
 export default function ProtectedRoute() {
-    const hasToken = isAuthenticated();
+    const isAuthenticated = useUser().user;
 
-    if (!hasToken) {
+    if (!isAuthenticated) {
         return <Navigate to="/auth" replace 
         state={{ message: "עליך להיות מחובר כדי להיכנס לעמוד זה" }} />;
     }

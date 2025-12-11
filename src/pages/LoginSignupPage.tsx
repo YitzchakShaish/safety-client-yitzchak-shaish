@@ -56,9 +56,10 @@ export default function LoginSignupPage() {
         }
 
         if (mode === "login" && response.success) {
-            updateUser(response.user)
+            updateUser(response.user);
+            navigate("/");
         }
-        
+
         const type: MessageType = mode === "login" ? "success" : "info";
         showMessage(response.message, type, mode === "signup" ? "login" : undefined);
         setName("");

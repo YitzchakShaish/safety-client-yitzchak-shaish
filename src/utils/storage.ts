@@ -12,9 +12,6 @@ export function removeToken() {
     localStorage.removeItem("token");
 }
 
-export function isAuthenticated() {
-    return !!getToken();
-}
 
 export function setUser(user: object) {
     localStorage.setItem("user", JSON.stringify(user));
@@ -29,10 +26,6 @@ export function getUser() {
     } catch {
         return null;
     }
-}
-
-export function hasUser() {
-    return !!getUser();
 }
 
 export function removeUser() {

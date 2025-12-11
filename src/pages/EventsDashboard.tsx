@@ -1,11 +1,13 @@
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, LinearProgress } from "@mui/material";
 import EventSearchBar from "../components/EventSearchBar";
 import EventsTable from "../components/eventsTable/EventsTable";
 import { useState, useCallback, useEffect } from "react";
 import type { EventFilters, EventRow } from "../types/eventsTable";
 import { getAllEventReports } from "../api/eventReport.api";
+import { useUser } from "../hooks/useUser";
 
 export default function EventsDashboard() {
+  const { user } = useUser();
   // State for search filters
   const [tempFilters, setTempFilters] = useState<EventFilters>({
     q: "",
@@ -63,7 +65,7 @@ export default function EventsDashboard() {
     }
 
     fetchReports();
-  }, [page, perPage, activeFilters]);
+  }, [page, perPage, activeFilters, user]);
 
 
 
@@ -78,6 +80,12 @@ export default function EventsDashboard() {
       setIsSearching(false);
     }
   }, [isSearching, tempFilters]);
+  
+  if (loading) return <Box sx={{ width: '100%' }}>
+    <LinearProgress />
+  </Box>;
+
+
 
   return (
     <Box width={"100%"} >
