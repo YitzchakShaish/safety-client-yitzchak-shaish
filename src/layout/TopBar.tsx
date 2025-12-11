@@ -40,7 +40,7 @@ export default function TopBar() {
             <SettingsIcon />
           </IconButton>
 
-          <IconButton sx={topIconButton} onClick={() => navigate("auth")}>
+          <IconButton sx={topIconButton} onClick={() => navigate("/profile")}>
             <AccountCircle />
 
           </IconButton>

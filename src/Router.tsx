@@ -6,6 +6,7 @@ import EventEntry from "./pages/EventEntry";
 import SingleEventPage from "./pages/SingleEventPage";
 import LoginSignupPage from "./pages/LoginSignupPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserProfilePage from "./pages/UserProfilePage";
 
 
 export default function Router() {
@@ -18,6 +19,7 @@ export default function Router() {
           <Route path="/events" element={<EventsDashboard />} />
           <Route path="/event-entry" element={<EventEntry />} />
           <Route path="/events/:id" element={<SingleEventPage />} />
+           <Route path="/profile" element={<UserProfilePage />} />
         </Route>
         <Route path="/auth" element={<LoginSignupPage />} />
       </Route>

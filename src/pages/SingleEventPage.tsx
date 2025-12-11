@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Box, Button } from "@mui/material";
+import EditSquareIcon from '@mui/icons-material/EditSquare';
+import EditOffIcon from '@mui/icons-material/EditOff';
 import type { EventReportWithId } from "../types";
 import EventHeader from "../components/singeleEvent/EventHeader";
 import ReportSection from "../components/singeleEvent/ReportSection";
@@ -112,8 +114,10 @@ export default function SingleEventPage() {
       <EventHeader eventId={eventData.id} status={eventData.summaryInfo.eventStatus} />
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="outlined" onClick={toggleEditing}>
-          {isEditing ? "סיום עריכה" : "עריכה"}
+          {isEditing ? "סיום עריכה " : "עריכה "}{" "}
+          {isEditing ? <EditOffIcon /> : <EditSquareIcon />}
         </Button>
+
       </Box>
 
 

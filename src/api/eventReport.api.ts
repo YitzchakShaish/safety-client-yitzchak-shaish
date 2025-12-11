@@ -2,9 +2,9 @@ import type { EventReport, EventReportWithId } from "../types";
 import { getToken } from "../utils/storage";
 
 const BASE_URL = "http://localhost:3000";
-const token = getToken();
 
 export async function createEventReport(data: EventReport) {
+    const token = getToken();
     const payload = {
         ...data,
         summaryInfo: {
@@ -46,6 +46,7 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     dateFrom?: string | null;
     dateTo?: string | null;
 }) {
+    const token = getToken();
     const query = new URLSearchParams();
     if (q) query.set("q", q);
     if (q) page = 1;
@@ -69,11 +70,14 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
         result = await res.json();
 
     } catch { }
+    if (res.status === 403)
+        return { status: 403, result: null };
 
-    return result;
+    return { result, status: res.status };
 }
 
 export async function updateEventReport(data: EventReportWithId) {
+    const token = getToken();
     const payload = {
         id: data.id,
         eventInfo: { ...data.eventInfo },
@@ -106,7 +110,7 @@ export async function updateEventReport(data: EventReportWithId) {
     }
 }
 export async function deleteEventReport(id: string) {
-
+    const token = getToken();
     try {
         const res = await fetch(`${BASE_URL}/event-report/${id}`, {
             method: "DELETE",

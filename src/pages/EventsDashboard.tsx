@@ -29,18 +29,25 @@ export default function EventsDashboard() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [total, setTotal] = useState(0);
+  const { logout } = useUser();
+
 
   useEffect(() => {
     async function fetchReports() {
       setLoading(true);
       try {
-        const { data, pagination } = await getAllEventReports({
+        const { result, status } = await getAllEventReports({
           page,
           perPage,
           q: activeFilters.q,
           dateFrom: activeFilters.dateFrom,
           dateTo: activeFilters.dateTo
         });
+
+        if (status === 403) {
+          return logout();
+        }
+        const { data, pagination } = result;
 
         const rows: EventRow[] = (data as any[])?.map(r => ({
           id: r.id,
@@ -80,7 +87,7 @@ export default function EventsDashboard() {
       setIsSearching(false);
     }
   }, [isSearching, tempFilters]);
-  
+
   if (loading) return <Box sx={{ width: '100%' }}>
     <LinearProgress />
   </Box>;
