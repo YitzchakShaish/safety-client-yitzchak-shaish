@@ -10,27 +10,27 @@ import { deleteEventReport, updateEventReport } from "../api/eventReport.api";
 import StatusAlert from "../components/common/StatusAlert";
 import EventImagesView from "../components/singeleEvent/EventImagesView";
 
+import { getPermissionLevel, } from "../permissions/getPermissionLevel";
+import { EDITABLE_FIELDS_BY_PERMISSION } from "../permissions/editableFields"
+import { useUser } from "../hooks/useUser";
+
 
 export default function SingleEventPage() {
-
+  const { user } = useUser();
   const location = useLocation();
   const isEditing = new URLSearchParams(location.search).get("edit") === "true";
   const navigate = useNavigate();
   const { event } = location.state as { event: EventReportWithId };
-  let userLevel = "high";
-  userLevel = "low"; // for testing
+  const permissionLevel = getPermissionLevel(user?.rank);
+  console.log(permissionLevel)
+  const editableFields = EDITABLE_FIELDS_BY_PERMISSION[permissionLevel];
+  console.log(editableFields)
   const [alert, setAlert] = useState<{
     open: boolean;
     status: number;
     message: string[];
   }>({ open: false, status: 0, message: [] });
   if (!event) return <Box>לא נמצא מידע לאירוע</Box>;
-
-  // Determines which fields the current user can edit based on their permission level
-  const editableFields = userLevel === "high"
-    ? [...Object.keys(event.eventInfo), ...Object.keys(event.summaryInfo), "eventStatus", "recommendations"]
-    : ["eventStatus"];
-
   const [eventData, setEventData] = useState(event);
 
   // Tracks if the user has made any changes (true = unsaved changes)
@@ -125,8 +125,8 @@ export default function SingleEventPage() {
       <ReportSection
         title="מידע על המדווח"
         data={eventData.reporterInfo}
-        section="reportInfo"
-        editableFields={isEditing ? editableFields : []}
+        section="reporterInfo"
+        editableFields={isEditing ? editableFields.reporterInfo ?? [] : []}
         onChange={(field, value) => handleChange("reporterInfo", field, value)}
       />
 
@@ -134,7 +134,7 @@ export default function SingleEventPage() {
         title="פרטי האירוע"
         data={eventData.eventInfo}
         section="eventInfo"
-        editableFields={isEditing ? editableFields : []}
+        editableFields={isEditing ? editableFields.eventInfo ?? [] : []}
         onChange={(field, value) => handleChange("eventInfo", field, value)}
       />
 
@@ -142,7 +142,7 @@ export default function SingleEventPage() {
         title="סיכום ונפגעים"
         data={eventData.summaryInfo}
         section="summaryInfo"
-        editableFields={isEditing ? editableFields : []}
+        editableFields={isEditing ? editableFields.summaryInfo ?? [] : []}
         onChange={(field, value) => handleChange("summaryInfo", field, value)}
       />
       {eventData?.images.length > 0 && <EventImagesView images={eventData.images}></EventImagesView>}

@@ -5,7 +5,7 @@ import { useUser } from "../hooks/useUser";
 type MessageType = "success" | "info" | "error";
 
 export default function UserProfilePage() {
-    const { user, updateUser } = useUser();
+    const { user } = useUser();
     const [editing, setEditing] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [message, setMessage] = useState<string | null>(null);
@@ -26,7 +26,6 @@ export default function UserProfilePage() {
 
     const handleUpload = () => {
         if (!selectedFile || !user) return;
-        // דוגמה: updateUser({...user, avatarUrl: uploadedUrl})
         showMessage("התמונה עודכנה בהצלחה", "success");
         setEditing(false);
     };

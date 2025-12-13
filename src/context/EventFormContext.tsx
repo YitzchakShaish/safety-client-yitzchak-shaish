@@ -17,7 +17,7 @@ export const initialEventData: EventReport = {
     position: "",
     unit: "",
     subUnit: "",
-    reportDate: new Date(),
+    reportDate: new Date().toISOString().split("T")[0],
     reportTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
   },
   eventInfo: {

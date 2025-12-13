@@ -16,7 +16,7 @@ export interface ReportInfo {
   position: string;
   unit: string;
   subUnit: string;
-  reportDate: Date;
+  reportDate: string;
   reportTime: string;
 }
 
@@ -49,5 +49,5 @@ export interface EventReport {
 
 export interface EventReportWithId extends EventReport {
   id: string;
-  images: {id: string, fileName: string, filePath: string}[];
+  images: { id: string, fileName: string, filePath: string }[];
 }

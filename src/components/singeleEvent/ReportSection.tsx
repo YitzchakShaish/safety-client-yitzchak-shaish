@@ -6,7 +6,7 @@ import { fieldLabels } from "../../types";
 export default function ReportSection({ title, data, editableFields, onChange }: {
   title: string;
   data: Record<string, any>;
-  section: "reportInfo" | "eventInfo" | "summaryInfo";
+  section: "reporterInfo" | "eventInfo" | "summaryInfo";
   editableFields: string[];
   onChange: (field: string, value: any) => void;
 }) {
