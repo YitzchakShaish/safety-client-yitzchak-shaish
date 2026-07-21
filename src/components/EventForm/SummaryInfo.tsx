@@ -4,6 +4,7 @@ import MyTextField from "../common/MyTextField";
 import { type SummaryInfo, injuryLevelArr } from "../../types";
 import { validateTextField } from "../../utils/validate";
 import ImageUploader from "../common/ImageUploader";
+import WeatherInfoCard from "../common/WeatherInfoCard";
 
 
 export default function SummaryInfo({
@@ -11,7 +12,7 @@ export default function SummaryInfo({
 }: {
   onCompleteChange: (valid: boolean) => void; images: File[], setImages: (files: File[]) => void;
 }) {
-  const { eventData, setEventData } = useEventForm();
+  const { eventData, setEventData, weatherDetails } = useEventForm();
 
   const handleChange = (
     field: keyof SummaryInfo,
@@ -32,6 +33,14 @@ export default function SummaryInfo({
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 3 }} sx={{ mt: { xs: 2, sm: 3, md: 3, lg: 5 } }}>
+
+      <Grid size={{ xs: 12 }}>
+        <WeatherInfoCard
+          condition={eventData.eventInfo.weatherCondition}
+          temperatureC={weatherDetails?.temperatureC}
+          address={eventData.eventInfo.address}
+        />
+      </Grid>
 
       <Grid size={{ xs: 12 }}>
         <MyTextField

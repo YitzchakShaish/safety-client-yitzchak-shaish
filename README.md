@@ -8,6 +8,8 @@ This is the client-side (frontend) part of a safety event management system. It 
 
 - View statistics and overview of safety events
 - Create new safety event reports with a multi-step form
+- Search for an event's address with autocomplete, or use the browser's current location
+- Automatically fetch and display the historical weather (condition + temperature) for the event's exact date, time and location
 - View and manage all safety events in a table
 - View detailed information about a single event
 - Edit and delete events (based on user permissions)
@@ -93,6 +95,8 @@ npm run build
   - `eventReport.api.ts` - Create, read, update, delete events
   - `eventReportImages.api.ts` - Upload images for events
   - `overview.api.ts` - Get statistics and overview data
+  - `geo.api.ts` - Address search and reverse geocoding (via the backend proxy)
+  - `weather.api.ts` - Historical weather lookup for an event's date, time and location (via the backend proxy)
 
 - **src/context/** - React Context for shared state
   - `UserContext.tsx` - Current user information
@@ -136,7 +140,8 @@ npm run build
 
 ### Event Management
 - **Create Events**: Multi-step form to create new safety event reports
-- **View All Events**: Table with search, filter, and pagination
+- **Address & Weather**: Search for the event's exact address (autocomplete) or use the browser's current location; the weather condition and temperature at that date, time and location are fetched and filled in automatically, and re-fetched whenever the date, time or address changes
+- **View All Events**: Table with search, filter, and pagination (includes a weather column)
 - **View Single Event**: Detailed view of one event with all information
 - **Edit Events**: Edit event details (permission-based)
 - **Delete Events**: Delete events (permission-based)
@@ -166,3 +171,5 @@ The system uses a rank-based permission system:
 - The app uses protected routes - you must be logged in to access most pages
 - Form data is saved in React Context while filling out multi-step forms
 - Images are uploaded separately after creating an event report
+- Address search, reverse geocoding and weather lookups are proxied through the backend (`/geo/*`, `/weather`) - the client never calls those external APIs directly
+- Using the "current location" button requires the browser's geolocation permission, which the user must approve

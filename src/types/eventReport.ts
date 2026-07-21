@@ -31,6 +31,9 @@ export interface EventInfo {
   eventSeverity: EventSeverity;
   eventResult: EventResult;
   weatherCondition: WeatherCondition;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface SummaryInfo {

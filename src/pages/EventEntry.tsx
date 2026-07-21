@@ -111,7 +111,7 @@ export default function EventEntry() {
         if (reportResponse.user) {
             updateUser(reportResponse.user);
         }
-        // handleReset();
+        handleReset();
     }
 
 

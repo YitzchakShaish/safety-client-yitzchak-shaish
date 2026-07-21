@@ -132,7 +132,9 @@ export default function SingleEventPage() {
 
       <ReportSection
         title="פרטי האירוע"
-        data={eventData.eventInfo}
+        data={Object.fromEntries(
+          Object.entries(eventData.eventInfo).filter(([key]) => key !== "latitude" && key !== "longitude")
+        )}
         section="eventInfo"
         editableFields={isEditing ? editableFields.eventInfo ?? [] : []}
         onChange={(field, value) => handleChange("eventInfo", field, value)}

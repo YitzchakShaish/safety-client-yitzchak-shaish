@@ -6,7 +6,6 @@ import { useNavigate, useLocation } from "react-router";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import EventIcon from '@mui/icons-material/Event';
 import SearchIcon from '@mui/icons-material/Search';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import UserProfileCard from "./UserProfileCard";
 import { sidebarItemButton } from "../styles/common";
 import { sidebarHeaderStyle } from "../styles/sidebar.styles";
@@ -23,7 +22,6 @@ export default function Sidebar() {
     { label: "מבט על", path: "/", icon: <DashboardIcon /> },
     { label: "הזנת אירוע חדש", path: "/event-entry", icon: <EventIcon /> },
     { label: "ניהול אירועים", path: "/events", icon: <SearchIcon /> },
-    { label: "דוחות BI", path: "/reports", icon: <BarChartIcon /> },
   ];
   const location = useLocation();
   return (

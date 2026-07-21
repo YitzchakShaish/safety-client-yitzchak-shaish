@@ -6,7 +6,7 @@ export const cardBase = {
   justifyContent: "space-between",
   transition: "all 0.2s ease",
   "&:hover": {
-    transform: "translateY(-0.2rem)",
+    // transform: "translateY(-0.2rem)",
     boxShadow: 6,
   },
 };

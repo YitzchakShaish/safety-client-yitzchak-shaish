@@ -7,6 +7,7 @@ export const tableFieldLabels: Record<keyof EventRowFields, string> = {
   category: "קטגוריית אירוע",
   eventDate: "תאריך אירוע",
   eventTime: "שעת אירוע",
+  weatherCondition: "מזג אוויר",
   fullName: "מדווח",
   unit: "יחידה",
 };

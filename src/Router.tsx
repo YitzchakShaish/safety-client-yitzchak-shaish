@@ -19,7 +19,7 @@ export default function Router() {
           <Route path="/events" element={<EventsDashboard />} />
           <Route path="/event-entry" element={<EventEntry />} />
           <Route path="/events/:id" element={<SingleEventPage />} />
-           <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
         </Route>
         <Route path="/auth" element={<LoginSignupPage />} />
       </Route>

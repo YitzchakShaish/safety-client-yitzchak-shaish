@@ -7,6 +7,7 @@ export interface Column {
     | "category"
     | "eventDate"
     | "eventTime"
+    | "weatherCondition"
     | "fullName"
     | "unit"
     | "actions";
@@ -20,6 +21,7 @@ export const columns: readonly Column[] = [
   { id: "category", label: "קטגוריית אירוע", minWidth: 150 },
   { id: "eventDate", label: "תאריך אירוע", minWidth: 100 },
   { id: "eventTime", label: "שעת אירוע", minWidth: 100 },
+  { id: "weatherCondition", label: "מזג אוויר", minWidth: 120 },
   { id: "fullName", label: "מדווח", minWidth: 130 },
   { id: "unit", label: "יחידה", minWidth: 130 },
   { id: "actions", label: "פעולות" },
@@ -32,6 +34,7 @@ export interface EventRowFields {
   category: string;
   eventDate: string;
   eventTime: string;
+  weatherCondition: string;
   fullName: string;
   unit: string;
 }

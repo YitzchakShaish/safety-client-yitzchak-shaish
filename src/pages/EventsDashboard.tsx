@@ -56,6 +56,7 @@ export default function EventsDashboard() {
           category: r.eventInfo.category,
           eventDate: r.eventInfo.eventDate,
           eventTime: r.eventInfo.eventTime,
+          weatherCondition: r.eventInfo.weatherCondition,
           fullName: r.reporterInfo.fullName,
           unit: r.reporterInfo.unit,
           fullData: r,

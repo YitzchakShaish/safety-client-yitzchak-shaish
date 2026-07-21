@@ -1,10 +1,13 @@
 import { createContext, useState, type ReactNode } from "react";
 import type { EventReport } from "../types/eventReport";
 import { getUser } from "../utils/storage";
+import type { WeatherResult } from "../api/weather.api";
 
 export interface EventFormContextType {
   eventData: EventReport;
   setEventData: React.Dispatch<React.SetStateAction<EventReport>>;
+  weatherDetails: WeatherResult | null;
+  setWeatherDetails: React.Dispatch<React.SetStateAction<WeatherResult | null>>;
 }
 
 export const EventFormContext = createContext<EventFormContextType | undefined>(
@@ -43,8 +46,9 @@ export const initialEventData: EventReport = {
 }
 export const EventFormProvider = ({ children }: { children: ReactNode }) => {
   const [eventData, setEventData] = useState<EventReport>(initialEventData);
+  const [weatherDetails, setWeatherDetails] = useState<WeatherResult | null>(null);
   return (
-    <EventFormContext.Provider value={{ eventData, setEventData }}>
+    <EventFormContext.Provider value={{ eventData, setEventData, weatherDetails, setWeatherDetails }}>
       {children}
     </EventFormContext.Provider>
   );

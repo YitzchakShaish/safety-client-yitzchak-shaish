@@ -73,13 +73,15 @@ export default function LoginSignupPage() {
             </Box>
 
             <Paper elevation={3} sx={{ width: "100%", maxWidth: 400, p: 4, borderRadius: 2 }}>
-                <Typography variant="h5" mb={3} textAlign="center">
+                <Typography variant="h5" mb={3} textAlign="center" >
                     {mode === "login" ? "כניסה למערכת" : "הרשמה למערכת"}
                 </Typography>
 
                 <form onSubmit={handleSubmit}>
-                    <TextField label="שם מלא" fullWidth margin="normal" value={name} onChange={e => setName(e.target.value)} />
-                    <TextField label="אימייל" type="email" fullWidth margin="normal" value={email} onChange={e => setEmail(e.target.value)} />
+                    <TextField label="שם מלא" fullWidth margin="normal" value={name} InputLabelProps={{ shrink: true }}
+                        placeholder={"שם מלא"} onChange={e => setName(e.target.value)} />
+                    <TextField label="אימייל" type="email" fullWidth margin="normal" value={email}   InputLabelProps={{ shrink: true }}
+            placeholder={"אימייל"} onChange={e => setEmail(e.target.value)} />
                     <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, py: 1.2 }}>
                         {mode === "login" ? "היכנס" : "להירשם"}
                     </Button>
