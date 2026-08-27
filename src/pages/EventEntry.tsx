@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Box, Stepper, Step, StepButton, Button, useTheme } from '@mui/material';
-import ReporterInfo from '../components/eventForm/ReporterInfo';
-import EventInfo from '../components/eventForm/EventInfo';
-import SummaryInfo from '../components/eventForm/SummaryInfo';
+import ReporterInfo from '../components/EventForm/ReporterInfo';
+import EventInfo from '../components/EventForm/EventInfo';
+import SummaryInfo from '../components/EventForm/SummaryInfo';
 import { innerBoxSx, outerBoxSx } from '../styles/eventEntry.styles';
 import { useEventForm } from '../hooks/useEventForm';
 import { createEventReport } from '../api/eventReport.api';
