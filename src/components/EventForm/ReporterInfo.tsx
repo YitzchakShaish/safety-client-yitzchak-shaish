@@ -10,14 +10,14 @@ export default function ReporterInfo({
 }) {
   const { eventData, setEventData } = useEventForm();
 
-  const handleChange = (field: keyof typeof eventData.reportInfo, value: string) => {
+  const handleChange = (field: keyof typeof eventData.reporterInfo, value: string) => {
     const updated = {
       ...eventData,
-      reportInfo: { ...eventData.reportInfo, [field]: value },
+      reporterInfo: { ...eventData.reporterInfo, [field]: value },
     };
     setEventData(updated);
 
-    const { fullName, phone, position, unit } = updated.reportInfo;
+    const { fullName, phone, position, unit } = updated.reporterInfo;
     const isValid =
       fullName.trim() !== "" &&
       phone.trim() !== "" &&
@@ -31,7 +31,7 @@ export default function ReporterInfo({
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="שם המדווח"
-          value={eventData.reportInfo.fullName}
+          value={eventData.reporterInfo.fullName}
           required
           type="text"
           validate={(v) => validateFullName(v)}
@@ -42,7 +42,7 @@ export default function ReporterInfo({
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="טלפון"
-          value={eventData.reportInfo.phone}
+          value={eventData.reporterInfo.phone}
           type="tel"
           required
           validate={(v) => {
@@ -56,7 +56,7 @@ export default function ReporterInfo({
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="תפקיד"
-          value={eventData.reportInfo.position}
+          value={eventData.reporterInfo.position}
           onChange={(val) => handleChange("position", val)}
           required
           type="text"
@@ -67,7 +67,7 @@ export default function ReporterInfo({
       <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="יחידה"
-          value={eventData.reportInfo.unit}
+          value={eventData.reporterInfo.unit}
           onChange={(val) => handleChange("unit", val)}
           required
           type="text"
@@ -79,24 +79,20 @@ export default function ReporterInfo({
         <MyTextField
           label="תת-יחידה"
           type="text"
-          value={eventData.reportInfo.subUnit}
+          value={eventData.reporterInfo.subUnit}
           onChange={(val) => handleChange("subUnit", val)}
         />
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField label="סטטוס טיפול" value={eventData.reportInfo.eventStatus} readOnly color="error" />
-      </Grid>
-
-      <Grid size={{ xs: 12, sm: 6 }}>
         <MyTextField
           label="תאריך דיווח"
-          value={eventData.reportInfo.reportDate.toLocaleDateString("he-IL")} readOnly color="secondary"
+          value={eventData.reporterInfo.reportDate} readOnly color="secondary"
         />
       </Grid>
 
       <Grid size={{ xs: 12, sm: 6 }}>
-        <MyTextField label="שעת דיווח" value={eventData.reportInfo.reportTime} readOnly color="secondary" />
+        <MyTextField label="שעת דיווח" value={eventData.reporterInfo.reportTime} readOnly color="secondary" />
       </Grid>
     </Grid>
   );

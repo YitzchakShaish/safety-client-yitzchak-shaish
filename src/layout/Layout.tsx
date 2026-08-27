@@ -14,11 +14,10 @@ export default function Layout() {
           "topbar topbar"
           "sidebar main"
         `,
-        height: "100vh",
+        minHeight: "100vh",
         direction: "rtl",
         bgcolor: "background.default",
         color: "text.primary",
-        overflow: "hidden",
       }}
     >
       <Box gridArea="topbar">
@@ -28,19 +27,23 @@ export default function Layout() {
       <Box gridArea="sidebar">
         <SideBar />
       </Box>
-      <Container
-        maxWidth="lg"
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          py: { xs: 2, sm: 3, md: 4 },
-          overflow: "hidden",
-          minHeight: 0,
-        }}
+      <Box
+        gridArea="main"
       >
-        <Outlet />
-      </Container>
+        <Container
+          maxWidth="lg"
+          sx={{
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            flexGrow: 1,
+          }}
+        >
+          <Outlet />
+        </Container>
+      </Box>
     </Box>
   );
 }

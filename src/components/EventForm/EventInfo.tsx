@@ -1,47 +1,162 @@
-import { FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, Box, TextField, useTheme } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Grid, TextField, FormControl, InputLabel, Select, MenuItem, RadioGroup, FormControlLabel, Radio, Box, FormLabel, Autocomplete, CircularProgress, IconButton, Tooltip, FormHelperText } from "@mui/material";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 import { useEventForm } from "../../hooks/useEventForm";
-import { categoryArr, eventResultArr, eventSeverityArr, type Location, locationArr, personalActivityTypeArr, unitActivityTypeArr, weatherConditionsArr } from "../../types/eventReport";
+import { optionsMap, fieldLabels } from "../../types";
 import MyTextField from "../common/MyTextField";
 import { validateTextField } from "../../utils/validate";
-import { dateTimeInputDarkModeSx } from "../../styles/eventInfo.styles";
+import { dateTimeInputDarkModeSx } from "../../styles/darkModeSx.styles";
+import { useTheme } from "@mui/material/styles";
+import { searchAddress, reverseGeocode, type AddressSuggestion } from "../../api/geo.api";
+import { getWeather } from "../../api/weather.api";
+import WeatherInfoCard from "../common/WeatherInfoCard";
+
+const SELECT_FIELDS = [
+  "unitActivityType",
+  "personalActivityType",
+  "category",
+  "eventSeverity",
+  "eventResult",
+  "weatherCondition",
+] as const;
 
 export default function EventInfo({ onCompleteChange }: { onCompleteChange: (valid: boolean) => void }) {
   const theme = useTheme();
-  const { eventData, setEventData } = useEventForm();
-  const eventInfoArr = [unitActivityTypeArr, personalActivityTypeArr, categoryArr, eventSeverityArr, eventResultArr, weatherConditionsArr];
+  const { eventData, setEventData, weatherDetails, setWeatherDetails } = useEventForm();
 
-  const handleChange = (field: keyof typeof eventData.eventInfo, value: string | null) => {
+  const [addressQuery, setAddressQuery] = useState(eventData.eventInfo.address ?? "");
+  const [addressOptions, setAddressOptions] = useState<AddressSuggestion[]>([]);
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const [loadingWeather, setLoadingWeather] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+  const [locationError, setLocationError] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const weatherDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const checkValidity = (info: typeof eventData.eventInfo) =>
+    info.eventDate !== "" &&
+    info.eventTime !== "" &&
+    info.eventDescription.trim() !== "" &&
+    info.unitActivityType !== "בחר/י" &&
+    info.personalActivityType !== "בחר/י" &&
+    info.category !== "בחר/י" &&
+    info.location !== "בחר/י" &&
+    info.eventSeverity !== "בחר/י" &&
+    info.eventResult !== "בחר/י" &&
+    info.weatherCondition !== "בחר/י";
+
+  const handleChange = (field: keyof typeof eventData.eventInfo, value: string) => {
     const updated = {
       ...eventData,
       eventInfo: { ...eventData.eventInfo, [field]: value },
     };
     setEventData(updated);
+    onCompleteChange(checkValidity(updated.eventInfo));
+  };
 
-    const {
-      eventDate,
-      eventTime,
-      eventDescription,
-      unitActivityType,
-      personalActivityType,
-      category,
-      location,
-      eventSeverity,
-      eventResult,
-      weatherCondition,
-    } = updated.eventInfo;
+  const updateEventInfo = (partial: Partial<typeof eventData.eventInfo>) => {
+    setEventData((prev) => {
+      const updated = { ...prev, eventInfo: { ...prev.eventInfo, ...partial } };
+      onCompleteChange(checkValidity(updated.eventInfo));
+      return updated;
+    });
+  };
 
-    const isValid =
-      eventDate !== "" &&
-      eventTime !== "" &&
-      eventDescription.trim() !== "" &&
-      unitActivityType !== "בחר/י" &&
-      personalActivityType !== "בחר/י" &&
-      category !== "בחר/י" &&
-      location !== "בחר/י" &&
-      eventSeverity !== "בחר/י" &&
-      eventResult !== "בחר/י" &&
-      weatherCondition !== "בחר/י";
-    onCompleteChange(isValid);
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (addressQuery.trim().length < 3) {
+      setAddressOptions([]);
+      return;
+    }
+
+    setLoadingAddress(true);
+    debounceRef.current = setTimeout(async () => {
+      const results = await searchAddress(addressQuery);
+      setAddressOptions(results);
+      setLoadingAddress(false);
+    }, 400);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [addressQuery]);
+
+  // Re-fetch weather automatically whenever the event's date, time or exact address changes.
+  useEffect(() => {
+    const { eventDate, eventTime, latitude, longitude } = eventData.eventInfo;
+
+    if (latitude == null || longitude == null || !eventDate) {
+      setWeatherDetails(null);
+      return;
+    }
+
+    if (weatherDebounceRef.current) clearTimeout(weatherDebounceRef.current);
+
+    setLoadingWeather(true);
+    weatherDebounceRef.current = setTimeout(async () => {
+      const weather = await getWeather(latitude, longitude, eventDate, eventTime || "12:00");
+      setLoadingWeather(false);
+      setWeatherDetails(weather);
+      if (weather?.condition) {
+        updateEventInfo({ weatherCondition: weather.condition as typeof eventData.eventInfo.weatherCondition });
+      }
+    }, 500);
+
+    return () => {
+      if (weatherDebounceRef.current) clearTimeout(weatherDebounceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventData.eventInfo.eventDate, eventData.eventInfo.eventTime, eventData.eventInfo.latitude, eventData.eventInfo.longitude]);
+
+  const applyLocation = (suggestion: AddressSuggestion) => {
+    updateEventInfo({
+      address: suggestion.displayName,
+      latitude: suggestion.latitude,
+      longitude: suggestion.longitude,
+    });
+  };
+
+  const handleAddressSelect = (suggestion: AddressSuggestion | null) => {
+    if (!suggestion) {
+      updateEventInfo({ address: undefined, latitude: undefined, longitude: undefined });
+      return;
+    }
+    applyLocation(suggestion);
+  };
+
+  const handleUseCurrentLocation = () => {
+    setLocationError("");
+
+    if (!navigator.geolocation) {
+      setLocationError("הדפדפן שלך לא תומך באיתור מיקום");
+      return;
+    }
+
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const suggestion = await reverseGeocode(latitude, longitude);
+        setLoadingLocation(false);
+
+        if (!suggestion) {
+          setLocationError("לא ניתן היה לאתר כתובת עבור המיקום הנוכחי");
+          return;
+        }
+
+        setAddressQuery(suggestion.displayName);
+        applyLocation(suggestion);
+      },
+      (error) => {
+        setLoadingLocation(false);
+        setLocationError(
+          error.code === error.PERMISSION_DENIED
+            ? "לא אושרה גישה למיקום"
+            : "לא ניתן היה לאתר את המיקום הנוכחי"
+        );
+      }
+    );
   };
 
   return (
@@ -53,6 +168,8 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
           value={eventData.eventInfo.eventDate}
           required
           fullWidth
+          inputProps={{ max: new Date().toISOString().split("T")[0] }}
+
           onChange={(e) => handleChange("eventDate", e.target.value)}
           sx={dateTimeInputDarkModeSx(theme)}
           helperText={
@@ -62,9 +179,9 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
                 ? "תאריך האירוע לא יכול להיות בעתיד"
                 : ""
           }
+          error={eventData.eventInfo.eventDate > new Date().toISOString().split("T")[0]}
         />
-
-      </Grid >
+      </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           label="שעת אירוע"
@@ -74,145 +191,126 @@ export default function EventInfo({ onCompleteChange }: { onCompleteChange: (val
           sx={dateTimeInputDarkModeSx(theme)}
           helperText={
             eventData.eventInfo.eventTime === ""
-              ? "שדה זה הוא חובה"
-              : ""
+            ? "שדה זה הוא חובה"
+            : ""
           }
           onChange={(e) => handleChange("eventTime", e.target.value)}
           type="time"
         />
+      </Grid>
 
-      </Grid >
-      <Grid size={{ xs: 12, sm: 12 }}>
-        <FormControl fullWidth>
-          <FormLabel id="location-label" sx={{ mb: 1 }}>
-            בחר מיקום אירוע
-          </FormLabel>
-
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "rgba(0, 0, 0, 0.23)",
-              borderRadius: 1,
-              p: 4,
-              "&:hover": {
-                borderColor: "black",
-              },
-            }}
-          >
+      <Grid size={12}>
+        <FormControl fullWidth required>
+          <FormLabel sx={{ mb: 1 }}>מיקום האירוע</FormLabel>
+          <Box sx={{ border: "1px solid rgba(0,0,0,0.23)", borderRadius: 1, p: 2, "&:hover": { borderColor: "black" } }}>
             <RadioGroup
               row
-              aria-required="true"
-              aria-labelledby="location-label"
-              name="location"
               value={eventData.eventInfo.location}
-              onChange={(e) => handleChange("location", e.target.value as Location)}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                width: "100%",
-              }}
+              onChange={(e) => handleChange("location", e.target.value)}
+              sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
             >
-              {locationArr.slice(1).map((loc) => (
-                <FormControlLabel
-                  key={loc}
-                  value={loc}
-                  control={<Radio />}
-                  label={loc}
-                />
+              {optionsMap.location.slice(1).map((loc) => (
+                <FormControlLabel key={loc} value={loc} control={<Radio />} label={loc} />
               ))}
             </RadioGroup>
           </Box>
         </FormControl>
       </Grid>
-
-      <Grid size={{ xs: 12, sm: 12 }}>
+      <Grid size={12}>
+        <Autocomplete
+          fullWidth
+          options={addressOptions}
+          filterOptions={(options) => options}
+          loading={loadingAddress}
+          getOptionLabel={(option) => (typeof option === "string" ? option : option.displayName)}
+          isOptionEqualToValue={(option, value) => option.displayName === value.displayName}
+          value={
+            eventData.eventInfo.address
+              ? {
+                  displayName: eventData.eventInfo.address,
+                  latitude: eventData.eventInfo.latitude ?? 0,
+                  longitude: eventData.eventInfo.longitude ?? 0,
+                }
+              : null
+          }
+          onInputChange={(_e, value) => setAddressQuery(value)}
+          onChange={(_e, value) => handleAddressSelect(value)}
+          noOptionsText="לא נמצאו כתובות"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="כתובת מדויקת של האירוע (אופציונלי)"
+              helperText="מזג האוויר יתעדכן אוטומטית לפי הכתובת, התאריך והשעה שנבחרו"
+              slotProps={{
+                input: {
+                  ...params.InputProps,
+                  endAdornment: (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                      {(loadingAddress || loadingWeather) ? <CircularProgress size={18} /> : null}
+                      <Tooltip title="השתמש במיקום הנוכחי שלי">
+                        <span>
+                          <IconButton
+                            size="small"
+                            onClick={handleUseCurrentLocation}
+                            disabled={loadingLocation}
+                          >
+                            {loadingLocation ? <CircularProgress size={18} /> : <MyLocationIcon fontSize="small" />}
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                      {params.InputProps.endAdornment}
+                    </Box>
+                  ),
+                },
+              }}
+            />
+          )}
+        />
+        {locationError && <FormHelperText error>{locationError}</FormHelperText>}
+      </Grid>
+      {eventData.eventInfo.address && (
+        <Grid size={12}>
+          <WeatherInfoCard
+            condition={eventData.eventInfo.weatherCondition}
+            temperatureC={weatherDetails?.temperatureC}
+          />
+        </Grid>
+      )}
+      <Grid size={12}>
         <MyTextField
           label="תיאור האירוע"
           value={eventData.eventInfo.eventDescription}
           required
           validate={(v) => validateTextField(v, "תיאור האירוע", 30)}
           onChange={(val) => handleChange("eventDescription", val)}
-          multiline={true}
+          multiline
           rows={4}
-          type="text"
         />
       </Grid>
-      {eventInfoArr.map((arr, index) => (
-        <Grid key={index} size={{ xs: 12, sm: 6 }}>
-          <FormControl fullWidth required>
-            <InputLabel id={`select-label-${index}`}>
-              {arr === categoryArr
-                ? "קטגוריית אירוע"
-                : arr === unitActivityTypeArr
-                  ? "סוג פעילות יחידה"
-                  : arr === personalActivityTypeArr
-                    ? "סוג פעילות אישית"
-                    : arr === eventSeverityArr
-                      ? "חומרת האירוע"
-                      : arr === eventResultArr
-                        ? "תוצאת האירוע"
-                        : "תנאי מזג אוויר"}
-            </InputLabel>
+      {SELECT_FIELDS.map((field) => {
+        const options = optionsMap[field];
+        const value = eventData.eventInfo[field];
+        const label = fieldLabels[field];
 
-            <Select
-              labelId={`select-label-${index}`}
-              id={`select-${index}`}
-              value={
-                arr === categoryArr
-                  ? eventData.eventInfo.category
-                  : arr === unitActivityTypeArr
-                    ? eventData.eventInfo.unitActivityType
-                    : arr === personalActivityTypeArr
-                      ? eventData.eventInfo.personalActivityType
-                      : arr === eventSeverityArr
-                        ? eventData.eventInfo.eventSeverity
-                        : arr === eventResultArr
-                          ? eventData.eventInfo.eventResult
-                          : eventData.eventInfo.weatherCondition
-              }
-              label={
-                arr === categoryArr
-                  ? "קטגוריית אירוע"
-                  : arr === unitActivityTypeArr
-                    ? "סוג פעילות יחידה"
-                    : arr === personalActivityTypeArr
-                      ? "סוג פעילות אישית"
-                      : arr === eventSeverityArr
-                        ? "חומרת האירוע"
-                        : arr === eventResultArr
-                          ? "תוצאת האירוע"
-                          : "תנאי מזג אוויר"
-              }
-              onChange={(val) =>
-                handleChange(
-                  arr === categoryArr
-                    ? "category"
-                    : arr === unitActivityTypeArr
-                      ? "unitActivityType"
-                      : arr === personalActivityTypeArr
-                        ? "personalActivityType"
-                        : arr === eventSeverityArr
-                          ? "eventSeverity"
-                          : arr === eventResultArr
-                            ? "eventResult"
-                            : "weatherCondition",
-                  val.target.value as string
-                )
-              }
-            >
-              <MenuItem value={arr[0]} disabled>
-                {arr[0]}
-              </MenuItem>
-              {arr.slice(1).map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-      ))}
+        return (
+          <Grid key={field} size={{ xs: 12, sm: 6 }}>
+            <FormControl fullWidth required>
+              <InputLabel>{label}</InputLabel>
+              <Select
+                value={value}
+                label={label}
+                onChange={(e) => handleChange(field, e.target.value)}
+              >
+                {options.map((opt) => (
+                  <MenuItem key={opt} value={opt} disabled={opt === "בחר/י"}>
+                    {opt}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        );
+      })}
     </Grid>
   );
 }
