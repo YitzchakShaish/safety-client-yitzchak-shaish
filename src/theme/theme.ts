@@ -65,6 +65,15 @@ export const getAppTheme = (mode: "light" | "dark") =>
                 : "linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(60,60,60,1) 100%)",
           },
         },
-      }
+      },
+      MuiTypography: {
+        styleOverrides: {
+          root: {
+            '&:hover': {
+              cursor: 'default',
+            },
+          },
+        },
+      },
     }
   });

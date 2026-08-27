@@ -36,6 +36,8 @@ export default function MyTextField({
             error={!!errorMessage}
             helperText={errorMessage || ""}
             InputProps={readOnly ? { readOnly: true } : undefined}
+            InputLabelProps={{ shrink: true }}
+            placeholder={label}
             color={color}
             multiline={multiline}
             rows={rows}

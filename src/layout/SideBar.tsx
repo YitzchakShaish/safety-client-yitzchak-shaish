@@ -1,26 +1,29 @@
 import { Drawer, List, ListItem, ListItemButton, ListItemText, Box, Typography, Divider, ListItemIcon } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+
 //icons
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import EventIcon from '@mui/icons-material/Event';
 import SearchIcon from '@mui/icons-material/Search';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import UserProfileCard from "./UserProfileCard";
 import { sidebarItemButton } from "../styles/common";
 import { sidebarHeaderStyle } from "../styles/sidebar.styles";
+import { useUser } from "../hooks/useUser";
 
 export default function Sidebar() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { user } = useUser()
+
+
 
   const menuItems = [
     { label: "מבט על", path: "/", icon: <DashboardIcon /> },
-    { label: "הזנת אירוע", path: "/event-entry", icon: <EventIcon /> },
+    { label: "הזנת אירוע חדש", path: "/event-entry", icon: <EventIcon /> },
     { label: "ניהול אירועים", path: "/events", icon: <SearchIcon /> },
-    { label: "דוחות BI", path: "/reports", icon: <BarChartIcon /> },
   ];
-
+  const location = useLocation();
   return (
     <Drawer
       variant="permanent"
@@ -39,12 +42,13 @@ export default function Sidebar() {
           height: "calc(100vh - 4rem)",
           display: "flex",
           flexDirection: "column",
-          overflow: "hidden",
+          overflow: "auto",
           transition: "width 0.3s ease",
         },
         [theme.breakpoints.down("md")]: {
           "& .MuiDrawer-paper": {
             width: "clamp(6rem, 20vw, 12rem)",
+            overflow: "auto",
           },
         },
       }}
@@ -66,13 +70,14 @@ export default function Sidebar() {
                 py: { xs: 0.5, lg: 1 },
                 display: 'flex',
                 justifyContent: 'space-around',
+                backgroundColor: location.pathname === item.path ? theme.palette.action.selected : "transparent",
               }}
               onClick={() => navigate(item.path)}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText
                 secondary={item.label}
-                primaryTypographyProps={{ fontSize: { xs: "0.75rem", lg: "0.875rem" } }}
+                secondaryTypographyProps={{ fontSize: "1rem" }}
               />
             </ListItemButton>
           </ListItem>
@@ -80,21 +85,23 @@ export default function Sidebar() {
       </List>
 
       <Divider sx={{ width: "100%" }} />
-      <Box sx={sidebarHeaderStyle(theme)}>
-        <Typography variant="h6" sx={{ color: "primary.main" }}>
-          פרטי משתמש
-        </Typography>
-      </Box>
 
-      <Divider sx={{ width: "100%", mb: 1 }} />
-      <Box sx={{ px: { xs: 1, sm: 0 }, pb: { xs: 1, sm: 0 } }}>
-        <UserProfileCard
-          name="אבי"
-          rank='אל"מ'
-          avatarSrc="1.png"
-          personalNumber={770770}
-        />
-      </Box>
+      {user && (
+        <>
+          <Box sx={sidebarHeaderStyle(theme)}>
+            <Typography variant="h6" sx={{ color: "primary.main" }}>
+              פרטי משתמש
+            </Typography>
+          </Box>
+
+          <Divider sx={{ width: "100%", mb: 1 }} />
+
+          <Box sx={{ px: { xs: 1, sm: 0 }, pb: { xs: 1, sm: 0 } }}>
+            <UserProfileCard {...user} />
+          </Box>
+        </>
+      )}
+
     </Drawer>
   );
 }

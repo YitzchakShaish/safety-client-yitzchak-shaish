@@ -1,0 +1,180 @@
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { Box, Button } from "@mui/material";
+import EditSquareIcon from '@mui/icons-material/EditSquare';
+import EditOffIcon from '@mui/icons-material/EditOff';
+import type { EventReportWithId } from "../types";
+import EventHeader from "../components/singeleEvent/EventHeader";
+import ReportSection from "../components/singeleEvent/ReportSection";
+import { deleteEventReport, updateEventReport } from "../api/eventReport.api";
+import StatusAlert from "../components/common/StatusAlert";
+import EventImagesView from "../components/singeleEvent/EventImagesView";
+
+import { getPermissionLevel, } from "../permissions/getPermissionLevel";
+import { EDITABLE_FIELDS_BY_PERMISSION } from "../permissions/editableFields"
+import { useUser } from "../hooks/useUser";
+
+
+export default function SingleEventPage() {
+  const { user } = useUser();
+  const location = useLocation();
+  const isEditing = new URLSearchParams(location.search).get("edit") === "true";
+  const navigate = useNavigate();
+  const { event } = location.state as { event: EventReportWithId };
+  const permissionLevel = getPermissionLevel(user?.rank);
+  console.log(permissionLevel)
+  const editableFields = EDITABLE_FIELDS_BY_PERMISSION[permissionLevel];
+  console.log(editableFields)
+  const [alert, setAlert] = useState<{
+    open: boolean;
+    status: number;
+    message: string[];
+  }>({ open: false, status: 0, message: [] });
+  if (!event) return <Box>לא נמצא מידע לאירוע</Box>;
+  const [eventData, setEventData] = useState(event);
+
+  // Tracks if the user has made any changes (true = unsaved changes)
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Updates a specific field in a given section immutably and marks that there are unsaved changes
+  const handleChange = (
+    section: "reporterInfo" | "eventInfo" | "summaryInfo",
+    field: string,
+    value: any
+  ) => {
+    setEventData(prev => ({
+      ...prev,
+      [section]: { ...prev[section], [field]: value }
+    }));
+    setHasChanges(true)
+  };
+
+  async function handleSave() {
+    console.log("saved:", eventData);
+    const response = await updateEventReport(eventData)
+    console.log(response)
+    if (response.status === 200) {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: [response.message]
+      });
+      setHasChanges(false)
+      toggleEditing()
+    } else {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: response.message || []
+      });
+    }
+  };
+
+  async function handleDelete() {
+    const confirmed = window.confirm("אתה בטוח שברצונך למחוק את האירוע הזה?");
+    if (!confirmed) return;
+    const response = await deleteEventReport(eventData.id)
+    console.log(response)
+    if (response.status === 200) {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: [response.message]
+      });
+      setTimeout(() => {
+        navigate("/events");
+      }, 3000);
+
+    } else {
+      setAlert({
+        open: true,
+        status: response.status,
+        message: response.message || []
+      });
+    }
+  };
+
+  function toggleEditing() {
+    const params = new URLSearchParams(location.search);
+
+    if (isEditing) {
+      params.delete("edit");
+    } else {
+      params.set("edit", "true");
+    }
+
+    navigate(`?${params.toString()}`, {
+      replace: true,
+      state: { event }
+    });
+  }
+
+  return (
+    <Box padding={2}>
+      <EventHeader eventId={eventData.id} status={eventData.summaryInfo.eventStatus} />
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button variant="outlined" onClick={toggleEditing}>
+          {isEditing ? "סיום עריכה " : "עריכה "}{" "}
+          {isEditing ? <EditOffIcon /> : <EditSquareIcon />}
+        </Button>
+
+      </Box>
+
+
+
+      <ReportSection
+        title="מידע על המדווח"
+        data={eventData.reporterInfo}
+        section="reporterInfo"
+        editableFields={isEditing ? editableFields.reporterInfo ?? [] : []}
+        onChange={(field, value) => handleChange("reporterInfo", field, value)}
+      />
+
+      <ReportSection
+        title="פרטי האירוע"
+        data={Object.fromEntries(
+          Object.entries(eventData.eventInfo).filter(([key]) => key !== "latitude" && key !== "longitude")
+        )}
+        section="eventInfo"
+        editableFields={isEditing ? editableFields.eventInfo ?? [] : []}
+        onChange={(field, value) => handleChange("eventInfo", field, value)}
+      />
+
+      <ReportSection
+        title="סיכום ונפגעים"
+        data={eventData.summaryInfo}
+        section="summaryInfo"
+        editableFields={isEditing ? editableFields.summaryInfo ?? [] : []}
+        onChange={(field, value) => handleChange("summaryInfo", field, value)}
+      />
+      {eventData?.images.length > 0 && <EventImagesView images={eventData.images}></EventImagesView>}
+
+      {isEditing && <Button
+        variant="contained"
+        size="large"
+        color="primary"
+        sx={{ mt: 3, px: 6, display: "block", mx: "auto", opacity: hasChanges ? 1 : 0.5 }}
+        onClick={handleSave}
+        disabled={!hasChanges}
+      >
+        שמירת שינויים
+      </Button>}
+      <Button
+        variant="contained"
+        size="large"
+        color="error"
+        sx={{ mt: 3, px: 6, display: "block", mx: "auto", opacity: hasChanges ? 1 : 0.5 }}
+        onClick={handleDelete}
+      >
+        מחיקת אירוע
+      </Button>
+      <StatusAlert
+        open={alert.open}
+        statusCode={alert.status}
+        message={alert.message}
+        onClose={() => setAlert({ ...alert, open: false })}
+        duration={3000}
+      />
+    </Box>
+  );
+}

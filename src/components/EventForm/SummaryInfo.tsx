@@ -1,16 +1,18 @@
 import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Grid } from "@mui/material";
 import { useEventForm } from "../../hooks/useEventForm";
 import MyTextField from "../common/MyTextField";
-import { type SummaryInfo, injuryLevelArr } from "../../types/eventReport";
+import { type SummaryInfo, injuryLevelArr } from "../../types";
 import { validateTextField } from "../../utils/validate";
+import ImageUploader from "../common/ImageUploader";
+import WeatherInfoCard from "../common/WeatherInfoCard";
 
 
-export default function SummaryInfoStep({
-  onCompleteChange,
+export default function SummaryInfo({
+  onCompleteChange, images, setImages,
 }: {
-  onCompleteChange: (valid: boolean) => void;
+  onCompleteChange: (valid: boolean) => void; images: File[], setImages: (files: File[]) => void;
 }) {
-  const { eventData, setEventData } = useEventForm();
+  const { eventData, setEventData, weatherDetails } = useEventForm();
 
   const handleChange = (
     field: keyof SummaryInfo,
@@ -31,6 +33,14 @@ export default function SummaryInfoStep({
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 3 }} sx={{ mt: { xs: 2, sm: 3, md: 3, lg: 5 } }}>
+
+      <Grid size={{ xs: 12 }}>
+        <WeatherInfoCard
+          condition={eventData.eventInfo.weatherCondition}
+          temperatureC={weatherDetails?.temperatureC}
+          address={eventData.eventInfo.address}
+        />
+      </Grid>
 
       <Grid size={{ xs: 12 }}>
         <MyTextField
@@ -69,7 +79,7 @@ export default function SummaryInfoStep({
 
           <MyTextField
             label="פרטי פגיעות"
-            value={eventData.summaryInfo.injuryDetails}
+            value={String(eventData.summaryInfo.injuryDetails)}
             required
             validate={(v) => validateTextField(v, "פרטי פגיעות", 10)}
             onChange={(val) => handleChange("injuryDetails", val)}
@@ -78,6 +88,8 @@ export default function SummaryInfoStep({
           />
         </Grid>)
       }
+
+      <ImageUploader images={images} setImages={setImages}></ImageUploader>
       <Grid size={{ xs: 12 }}>
         <FormControlLabel
           control={
@@ -89,6 +101,9 @@ export default function SummaryInfoStep({
           }
           label="אני מאשר/ת את כל הנתונים"
         />
+      </Grid>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <MyTextField label="סטטוס טיפול" value={eventData.summaryInfo.eventStatus} readOnly color="error" />
       </Grid>
     </Grid>
   );
