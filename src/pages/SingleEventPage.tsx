@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { Box, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router";
+import { Alert, Box, Button, LinearProgress } from "@mui/material";
 import EditSquareIcon from '@mui/icons-material/EditSquare';
 import EditOffIcon from '@mui/icons-material/EditOff';
 import type { EventReportWithId } from "../types";
 import EventHeader from "../components/singeleEvent/EventHeader";
 import ReportSection from "../components/singeleEvent/ReportSection";
-import { deleteEventReport, updateEventReport } from "../api/eventReport.api";
+import { deleteEventReport, getEventReport, updateEventReport } from "../api/eventReport.api";
 import StatusAlert from "../components/common/StatusAlert";
 import EventImagesView from "../components/singeleEvent/EventImagesView";
 
@@ -16,11 +16,34 @@ import { useUser } from "../hooks/useUser";
 
 
 export default function SingleEventPage() {
+  const { id } = useParams();
+  const [event, setEvent] = useState<EventReportWithId | null>(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    let cancelled = false;
+    setEvent(null);
+    setError("");
+    if (!id) {
+      setError("לא נמצא מידע לאירוע");
+      return;
+    }
+    getEventReport(id).then(data => {
+      if (!cancelled) setEvent(data);
+    }).catch(() => {
+      if (!cancelled) setError("לא ניתן לטעון את האירוע. בדוק את החיבור ואת הרשאות הגישה.");
+    });
+    return () => { cancelled = true; };
+  }, [id]);
+  if (error) return <Alert severity="error">{error}</Alert>;
+  if (!event || event.id !== id) return <LinearProgress />;
+  return <EventDetails key={event.id} event={event} />;
+}
+
+function EventDetails({ event }: { event: EventReportWithId }) {
   const { user } = useUser();
   const location = useLocation();
   const isEditing = new URLSearchParams(location.search).get("edit") === "true";
   const navigate = useNavigate();
-  const { event } = location.state as { event: EventReportWithId };
   const permissionLevel = getPermissionLevel(user?.rank);
   console.log(permissionLevel)
   const editableFields = EDITABLE_FIELDS_BY_PERMISSION[permissionLevel];
@@ -30,7 +53,6 @@ export default function SingleEventPage() {
     status: number;
     message: string[];
   }>({ open: false, status: 0, message: [] });
-  if (!event) return <Box>לא נמצא מידע לאירוע</Box>;
   const [eventData, setEventData] = useState(event);
 
   // Tracks if the user has made any changes (true = unsaved changes)
