@@ -23,6 +23,7 @@ export const login = async (fullName: string, email: string): Promise<AuthRespon
   try {
     const res = await fetch(`${BASE_URL}/login`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fullName, email }),
     });

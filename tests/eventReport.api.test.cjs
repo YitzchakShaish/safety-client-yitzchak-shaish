@@ -11,7 +11,7 @@ function loadApi(fetch) {
     });
     const context = {
         exports: {}, fetch, URLSearchParams,
-        require: name => name.includes('storage')
+        require: name => name.includes('authenticatedFetch') ? { authenticatedFetch: fetch } : name.includes('storage')
             ? { getToken: () => 'test-token' }
             : { API_BASE_URL: 'http://test' }
     };

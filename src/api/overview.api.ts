@@ -1,3 +1,4 @@
+import { authenticatedFetch } from "./authenticatedFetch";
 import { getToken } from "../utils/storage";
 import { API_BASE_URL as BASE_URL } from "../config/env";
 
@@ -5,7 +6,7 @@ export async function getOverviewStats() {
     const token = getToken();
 
     try {
-        const res = await fetch(`${BASE_URL}/overview`, {
+        const res = await authenticatedFetch(`${BASE_URL}/overview`, {
             method: "GET",
             credentials: "include",
             headers: {
