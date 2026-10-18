@@ -8,7 +8,7 @@ export const EDITABLE_FIELDS_BY_PERMISSION: Record<
   Partial<Record<SectionKey, string[]>>
 > = {
   basic: {
-    summaryInfo: ["eventStatus"],
+
   },
 
   advanced: {
@@ -18,7 +18,7 @@ export const EDITABLE_FIELDS_BY_PERMISSION: Record<
 
 
   admin: {
-    reporterInfo: ["fullName", "phone", "position", "unit", "subUnit"],
+    reporterInfo: ["phone", "position", "unit", "subUnit"],
     eventInfo: ["eventDescription", "unitActivityType", "personalActivityType", "category", "location", "eventSeverity", "eventResult", "weatherCondition",],
     summaryInfo: ["injuryLevel", "injuryDetails", "recommendations", "approval", "eventStatus"],
   }
