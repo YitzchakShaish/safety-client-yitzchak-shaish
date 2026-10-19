@@ -8,7 +8,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useColorMode } from "../theme/ThemeContext";
+import { useColorMode } from "../theme/colorMode";
 import { useNavigate } from "react-router";
 import { useUser } from "../hooks/useUser";
 import UserAvatar from "../components/common/UserAvatar";

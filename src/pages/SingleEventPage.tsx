@@ -13,6 +13,7 @@ import EventImagesView from "../components/singeleEvent/EventImagesView";
 import { getPermissionLevel, } from "../permissions/getPermissionLevel";
 import { EDITABLE_FIELDS_BY_PERMISSION } from "../permissions/editableFields"
 import { useUser } from "../hooks/useUser";
+import type { EditableValue } from "../components/singeleEvent/EditableField";
 
 
 export default function SingleEventPage() {
@@ -62,11 +63,11 @@ function EventDetails({ event }: { event: EventReportWithId }) {
   const handleChange = (
     section: "reporterInfo" | "eventInfo" | "summaryInfo",
     field: string,
-    value: any
+    value: EditableValue
   ) => {
     setEventData(prev => ({
       ...prev,
-      [section]: { ...prev[section], [field]: value }
+      [section]: { ...prev[section], [field]: value } as (typeof prev)[typeof section]
     }));
     setHasChanges(true)
   };
@@ -79,7 +80,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
       setAlert({
         open: true,
         status: response.status,
-        message: [response.message]
+        message: [response.message] as string[]
       });
       setHasChanges(false)
       toggleEditing()
@@ -87,7 +88,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
       setAlert({
         open: true,
         status: response.status,
-        message: response.message || []
+        message: (response.message || []) as string[]
       });
     }
   };
@@ -101,7 +102,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
       setAlert({
         open: true,
         status: response.status,
-        message: [response.message]
+        message: [response.message] as string[]
       });
       setTimeout(() => {
         navigate("/events");
@@ -111,7 +112,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
       setAlert({
         open: true,
         status: response.status,
-        message: response.message || []
+        message: (response.message || []) as string[]
       });
     }
   };

@@ -1,3 +1,5 @@
+import type { SessionUser } from "../types/sessionUser";
+
 export function getToken() {
     return localStorage.getItem("token");
 }
@@ -13,16 +15,16 @@ export function removeToken() {
 }
 
 
-export function setUser(user: object) {
+export function setUser(user: SessionUser) {
     localStorage.setItem("user", JSON.stringify(user));
 }
 
-export function getUser() {
+export function getUser(): SessionUser | null {
     const str = localStorage.getItem("user");
     if (!str) return null;
 
     try {
-        return JSON.parse(str);
+        return JSON.parse(str) as SessionUser;
     } catch {
         return null;
     }

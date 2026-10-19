@@ -1,6 +1,19 @@
 import { authenticatedFetch } from "./authenticatedFetch";
 import { getToken } from "../utils/storage";
 import { API_BASE_URL as BASE_URL } from "../config/env";
+import { errorMessage, readJson } from "./readJson";
+
+export interface OverviewStats {
+    totalEvents: number;
+    completedToday: number;
+    openEvents: number;
+    highPriorityEvents: number;
+}
+
+interface OverviewResponse {
+    message?: string;
+    data?: OverviewStats | null;
+}
 
 export async function getOverviewStats() {
     const token = getToken();
@@ -15,21 +28,17 @@ export async function getOverviewStats() {
             },
         });
 
-        let result: any = null;
-        try {
-            result = await res.json();
-        } catch {
-            result = null;
-        }
+        const result = await readJson<OverviewResponse | null>(res, null);
         console.log(result);
         return {
             status: res.status,
             message: result?.message || "",
             success: res.ok,
-            data: result.data
+            // Accessing data on a null body still throws, matching the previous catch path.
+            data: (result as OverviewResponse).data,
         };
 
-    } catch (error: any) {
-        return { status: 0, message: error.message, success: false, data: null };
+    } catch (error: unknown) {
+        return { status: 0, message: errorMessage(error), success: false, data: null };
     }
 }

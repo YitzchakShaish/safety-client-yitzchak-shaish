@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, TextField, Button, Paper, Typography, Link, Alert } from "@mui/material";
 import { login, signup } from "../api/auth.api"
 import type { AuthResponse } from "../types/authResponse";
@@ -19,7 +19,7 @@ export default function LoginSignupPage() {
     const [message, setMessage] = useState<string | null>(null);
     const [messageType, setMessageType] = useState<MessageType>("info");
 
-    const showMessage = (text: string, type: MessageType = "info", newMode?: Mode) => {
+    const showMessage = useCallback((text: string, type: MessageType = "info", newMode?: Mode) => {
         setMessage(text);
         setMessageType(type);
         setTimeout(() => {
@@ -29,14 +29,14 @@ export default function LoginSignupPage() {
             }
             if (newMode) setMode(newMode);
         }, 3000);
-    };
+    }, [navigate]);
 
     useEffect(() => {
         if (location?.state?.message) {
             showMessage(location.state.message, "error")
             navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [location?.state?.message, navigate, location.pathname]);
+    }, [location?.state?.message, navigate, location.pathname, showMessage]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -56,7 +56,7 @@ export default function LoginSignupPage() {
         }
 
         if (mode === "login" && response.success) {
-            updateUser(response.user);
+            if (response.user) updateUser(response.user);
             navigate("/");
         }
 

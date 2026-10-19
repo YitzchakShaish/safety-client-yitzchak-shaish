@@ -1,9 +1,43 @@
 import { authenticatedFetch } from "./authenticatedFetch";
 import type { EventReport, EventReportWithId } from "../types";
+import type { SessionUser } from "../types/sessionUser";
 import { getToken } from "../utils/storage";
 import { API_BASE_URL as BASE_URL } from "../config/env";
+import { errorMessage, readJson } from "./readJson";
 
-export async function createEventReport(data: EventReport) {
+export type ApiMessage = string | string[];
+
+interface EventMutationResponse {
+    message?: ApiMessage;
+    user?: SessionUser;
+    data?: { id?: unknown };
+}
+
+export interface EventReportPage {
+    data?: EventReportWithId[];
+    pagination?: {
+        total?: number;
+        page?: number;
+    };
+    message?: ApiMessage;
+}
+
+export interface CreateEventReportResult {
+    status: number;
+    message?: ApiMessage;
+    success?: boolean;
+    user?: SessionUser;
+    id?: string;
+}
+
+export interface MutateEventReportResult {
+    status: number;
+    message?: ApiMessage;
+    success?: boolean;
+    user?: SessionUser;
+}
+
+export async function createEventReport(data: EventReport): Promise<CreateEventReportResult> {
     const token = getToken();
     const payload = {
         ...data,
@@ -26,19 +60,16 @@ export async function createEventReport(data: EventReport) {
             body: JSON.stringify(payload)
         });
 
-        let result: any = {};
-        try {
-            result = await res.json();
+        const result = await readJson<EventMutationResponse>(res, {});
+        const id = result.data && typeof result.data.id === "string" ? result.data.id : undefined;
 
-        } catch { }
-
-        if (!res.ok || typeof result.data?.id !== "string") {
+        if (!res.ok || !id) {
             return { status: res.status, message: result.message || "אירעה שגיאה ביצירת הדוח", success: false };
         }
-        return { status: res.status, message: result.message, success: true, user: result.user, id: result.data.id as string };
+        return { status: res.status, message: result.message, success: true, user: result.user, id };
 
-    } catch (error: any) {
-        return { status: 0, message: error.message };
+    } catch (error: unknown) {
+        return { status: 0, message: errorMessage(error) };
     }
 }
 
@@ -60,7 +91,7 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     q?: string;
     dateFrom?: string | null;
     dateTo?: string | null;
-}) {
+}): Promise<{ status: number; result: EventReportPage | null }> {
     const token = getToken();
     const query = new URLSearchParams();
     if (q) query.set("q", q);
@@ -80,11 +111,7 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
             "Authorization": `Bearer ${token}`
         },
     });
-    let result: any = {};
-    try {
-        result = await res.json();
-
-    } catch { }
+    const result = await readJson<EventReportPage>(res, {});
     if (res.status === 403)
         return { status: 403, result: null };
 
@@ -115,7 +142,7 @@ export async function getEveryEventReport({ dateFrom, dateTo }: {
     }
 }
 
-export async function updateEventReport(data: EventReportWithId) {
+export async function updateEventReport(data: EventReportWithId): Promise<MutateEventReportResult> {
     const token = getToken();
     const payload = {
         id: data.id,
@@ -136,19 +163,15 @@ export async function updateEventReport(data: EventReportWithId) {
             body: JSON.stringify(payload)
         });
 
-        let result: any = {};
-        try {
-            result = await res.json();
-
-        } catch { }
+        const result = await readJson<EventMutationResponse>(res, {});
 
         return { status: res.status, message: result.message, success: true, user: result.user };
 
-    } catch (error: any) {
-        return { status: 0, message: error.message };
+    } catch (error: unknown) {
+        return { status: 0, message: errorMessage(error) };
     }
 }
-export async function deleteEventReport(id: string) {
+export async function deleteEventReport(id: string): Promise<MutateEventReportResult> {
     const token = getToken();
     try {
         const res = await authenticatedFetch(`${BASE_URL}/event-report/${id}`, {
@@ -159,14 +182,11 @@ export async function deleteEventReport(id: string) {
             },
         });
 
-        let result: any = {};
-        try {
-            result = await res.json();
-        } catch { }
+        const result = await readJson<EventMutationResponse>(res, {});
 
         return { status: res.status, message: result.message, user: result.user };
 
-    } catch (error: any) {
-        return { status: 0, message: error.message };
+    } catch (error: unknown) {
+        return { status: 0, message: errorMessage(error) };
     }
 }

@@ -52,8 +52,8 @@ export default function EventsDashboard() {
         const { data, pagination } = result;
 
         setPageRows((Array.isArray(data) ? data : []).map(toEventRow));
-        setTotal(pagination?.total);
-        setPage(pagination?.page);
+        setTotal(pagination?.total as number);
+        setPage(pagination?.page as number);
       } catch (err) {
         console.error(err);
       } finally {

@@ -1,3 +1,5 @@
+import type { Theme } from "@mui/material/styles";
+
 export const cardBase = {
   p: "clamp(0.8rem, 1.5vw, 1.6rem)",
   borderRadius: "0.8rem",
@@ -35,7 +37,7 @@ export const topIconButton = {
   "&:hover": { opacity: 0.8 },
 };
 
-export const sidebarItemButton = (theme: any) => ({
+export const sidebarItemButton = (theme: Theme) => ({
   textAlign: "center",
   borderRadius: "0.8rem",
   mx: "0.3rem",
