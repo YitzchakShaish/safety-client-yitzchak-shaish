@@ -3,8 +3,9 @@ import EventSearchBar from "../components/EventSearchBar";
 import EventsTable from "../components/eventsTable/EventsTable";
 import { useState, useCallback, useEffect } from "react";
 import type { EventFilters, EventRow } from "../types/eventsTable";
-import { getAllEventReports } from "../api/eventReport.api";
+import { getAllEventReports, getEveryEventReport } from "../api/eventReport.api";
 import { useUser } from "../hooks/useUser";
+import { filterEventRows, toEventRow } from "../utils/filterEvents";
 
 export default function EventsDashboard() {
   const { user } = useUser();
@@ -23,59 +24,89 @@ export default function EventsDashboard() {
 
   const [isSearching, setIsSearching] = useState(false);
 
-  const [allRows, setAllRows] = useState<EventRow[]>([]);
+  const [pageRows, setPageRows] = useState<EventRow[]>([]);
+  const [filteredRows, setFilteredRows] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [total, setTotal] = useState(0);
 
+  const textQuery = activeFilters.q.trim();
 
   useEffect(() => {
+    if (textQuery) return;
+
+    let cancelled = false;
     async function fetchReports() {
       setLoading(true);
       try {
         const { result, status } = await getAllEventReports({
           page,
           perPage,
-          q: activeFilters.q,
           dateFrom: activeFilters.dateFrom,
-          dateTo: activeFilters.dateTo
+          dateTo: activeFilters.dateTo,
         });
 
-        if (status !== 200) return;
+        if (cancelled || status !== 200 || !result) return;
         const { data, pagination } = result;
 
-        const rows: EventRow[] = (data as any[])?.map(r => ({
-          id: r.id,
-          eventNumber: `EV-${r.id.toString().toUpperCase().slice(0, 4)}`,
-          eventStatus: r.summaryInfo.eventStatus,
-          category: r.eventInfo.category,
-          eventDate: r.eventInfo.eventDate,
-          eventTime: r.eventInfo.eventTime,
-          weatherCondition: r.eventInfo.weatherCondition,
-          fullName: r.reporterInfo.fullName,
-          unit: r.reporterInfo.unit,
-          fullData: r,
-        }));
-
-        setAllRows(rows);
+        setPageRows((Array.isArray(data) ? data : []).map(toEventRow));
         setTotal(pagination?.total);
-        setPage(pagination?.page)
+        setPage(pagination?.page);
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     fetchReports();
-  }, [page, perPage, activeFilters, user]);
+    return () => {
+      cancelled = true;
+    };
+  }, [page, perPage, activeFilters, textQuery, user]);
 
+  // The list API matches only some columns, and the event number is formatted here.
+  // Load the date-filtered reports and match every cell the table renders.
+  useEffect(() => {
+    if (!textQuery) return;
 
+    let cancelled = false;
+    async function fetchMatches() {
+      setLoading(true);
+      try {
+        const { status, data } = await getEveryEventReport({
+          dateFrom: activeFilters.dateFrom,
+          dateTo: activeFilters.dateTo,
+        });
+        if (cancelled) return;
+        if (status !== 200) {
+          setFilteredRows([]);
+          return;
+        }
+        setFilteredRows(filterEventRows(data.map(toEventRow), {
+          q: activeFilters.q,
+          dateFrom: null,
+          dateTo: null,
+        }));
+      } catch (err) {
+        console.error(err);
+        if (!cancelled) setFilteredRows([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchMatches();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeFilters, textQuery, user]);
 
   // Handle search toggle
   const handleSearchToggle = useCallback(() => {
+    setPage(1);
     if (!isSearching) {
       setActiveFilters({ ...tempFilters });
       setIsSearching(true);
@@ -90,7 +121,10 @@ export default function EventsDashboard() {
     <LinearProgress />
   </Box>;
 
-
+  const visibleRows = textQuery
+    ? filteredRows.slice((page - 1) * perPage, page * perPage)
+    : pageRows;
+  const visibleTotal = textQuery ? filteredRows.length : total;
 
   return (
     <Box width={"100%"} >
@@ -102,10 +136,10 @@ export default function EventsDashboard() {
       />
       <Divider sx={{ my: 2 }} />
       <EventsTable
-        rows={allRows}
+        rows={visibleRows}
         page={page}
         perPage={perPage}
-        total={total}
+        total={visibleTotal}
         onPageChange={setPage}
         onPerPageChange={(n) => {
           setPerPage(n);

@@ -91,6 +91,30 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     return { result, status: res.status };
 }
 
+/** Every report in the date range. Free-text matching is done on the client. */
+export async function getEveryEventReport({ dateFrom, dateTo }: {
+    dateFrom?: string | null;
+    dateTo?: string | null;
+}): Promise<{ status: number; data: EventReportWithId[] }> {
+    const perPage = 100;
+    const data: EventReportWithId[] = [];
+    let page = 1;
+
+    for (;;) {
+        const { result, status } = await getAllEventReports({ page, perPage, dateFrom, dateTo });
+        if (status !== 200 || !result) return { status, data: [] };
+
+        const batch: EventReportWithId[] = Array.isArray(result.data) ? result.data : [];
+        data.push(...batch);
+
+        const total = Number(result.pagination?.total ?? data.length);
+        if (batch.length === 0 || data.length >= total || page >= 200) {
+            return { status: 200, data };
+        }
+        page += 1;
+    }
+}
+
 export async function updateEventReport(data: EventReportWithId) {
     const token = getToken();
     const payload = {

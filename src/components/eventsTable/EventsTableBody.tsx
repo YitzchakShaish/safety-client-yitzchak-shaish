@@ -1,5 +1,6 @@
 import { TableBody, TableRow, TableCell, Button } from "@mui/material";
 import { columns, type EventRow } from "../../types";
+import { displayedEventCell } from "../../utils/filterEvents";
 
 export default function EventsTableBody({
   rows,
@@ -23,7 +24,7 @@ export default function EventsTableBody({
                   </TableCell>
                 );
               }
-              return <TableCell key={column.id} align="right">{row[column.id]}</TableCell>;
+              return <TableCell key={column.id} align="right">{displayedEventCell(row, column.id)}</TableCell>;
             })}
           </TableRow>
         ))}
