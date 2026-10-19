@@ -1,3 +1,4 @@
+import SafetyOverviewPage from "./pages/SafetyOverviewPage";
 import UserManagementPage from "./pages/UserManagementPage";
 import { Routes, Route } from "react-router";
 import HomePage from "./pages/HomePage";
@@ -20,6 +21,7 @@ export default function Router() {
           <Route path="/events" element={<EventsDashboard />} />
           <Route path="/event-entry" element={<EventEntry />} />
           <Route path="/events/:id" element={<SingleEventPage />} />
+          <Route path="/safety-overview" element={<SafetyOverviewPage />} />
           <Route path="/users" element={<UserManagementPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
         </Route>
