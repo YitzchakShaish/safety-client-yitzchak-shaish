@@ -44,7 +44,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
   const location = useLocation();
   const isEditing = new URLSearchParams(location.search).get("edit") === "true";
   const navigate = useNavigate();
-  const permissionLevel = getPermissionLevel(user?.rank);
+  const permissionLevel = getPermissionLevel(user?.role);
   console.log(permissionLevel)
   const editableFields = EDITABLE_FIELDS_BY_PERMISSION[permissionLevel];
   console.log(editableFields)
@@ -135,10 +135,10 @@ function EventDetails({ event }: { event: EventReportWithId }) {
     <Box padding={2}>
       <EventHeader eventId={eventData.id} status={eventData.summaryInfo.eventStatus} />
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button variant="outlined" onClick={toggleEditing}>
+        {permissionLevel !== "basic" && <Button variant="outlined" onClick={toggleEditing}>
           {isEditing ? "סיום עריכה " : "עריכה "}{" "}
           {isEditing ? <EditOffIcon /> : <EditSquareIcon />}
-        </Button>
+        </Button>}
 
       </Box>
 
@@ -181,7 +181,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
       >
         שמירת שינויים
       </Button>}
-      <Button
+      {permissionLevel === "admin" && <Button
         variant="contained"
         size="large"
         color="error"
@@ -189,7 +189,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
         onClick={handleDelete}
       >
         מחיקת אירוע
-      </Button>
+      </Button>}
       <StatusAlert
         open={alert.open}
         statusCode={alert.status}
