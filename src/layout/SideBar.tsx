@@ -99,7 +99,7 @@ export default function Sidebar() {
           <Divider sx={{ width: "100%", mb: 1 }} />
 
           <Box sx={{ px: { xs: 1, sm: 0 }, pb: { xs: 1, sm: 0 } }}>
-            <UserProfileCard {...user} />
+            <UserProfileCard />
           </Box>
         </>
       )}

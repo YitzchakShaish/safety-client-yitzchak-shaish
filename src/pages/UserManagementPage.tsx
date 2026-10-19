@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { getUsers, saveUser, roleLabels, type ManagedUser, type UserRole } from "../api/users.api";
 import { useUser } from "../hooks/useUser";
+import UserAvatar from "../components/common/UserAvatar";
 
 const ranks = ["טוראי", "טוראי ראשון", "סמל", "סמל ראשון", "רב סמל", "סרן", "רב סרן", "אלוף משנה", "תת אלוף", "אלוף", "רב אלוף"];
 
@@ -58,7 +59,15 @@ export default function UserManagementPage() {
         <TableContainer component={Paper}><Table>
             <TableHead><TableRow>{["שם", "דרגה", "תפקיד", "יחידה", "הרשאה", "פעולה"].map(label => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead>
             <TableBody>{filtered.map(item => <TableRow key={item.id}>
-                <TableCell>{item.fullName}<Typography variant="caption" display="block">{item.email}</Typography></TableCell>
+                <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <UserAvatar name={item.fullName} avatarUrl={item.avatarUrl} sx={{ width: 36, height: 36, fontSize: "0.9rem" }} />
+                        <Box>
+                            {item.fullName}
+                            <Typography variant="caption" display="block">{item.email}</Typography>
+                        </Box>
+                    </Box>
+                </TableCell>
                 <TableCell>{item.rank}</TableCell><TableCell>{item.position || "—"}</TableCell><TableCell>{item.unit || "—"}</TableCell>
                 <TableCell>{roleLabels[item.role]}</TableCell><TableCell><Button onClick={() => { setEditing({ ...item }); setError(""); setMessage(""); }}>עריכה</Button></TableCell>
             </TableRow>)}{!filtered.length && <TableRow><TableCell colSpan={6}>לא נמצאו משתמשים</TableCell></TableRow>}</TableBody>

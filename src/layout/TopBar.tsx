@@ -11,6 +11,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useColorMode } from "../theme/ThemeContext";
 import { useNavigate } from "react-router";
 import { useUser } from "../hooks/useUser";
+import UserAvatar from "../components/common/UserAvatar";
 
 export default function TopBar() {
   const theme = useTheme();
@@ -40,9 +41,16 @@ export default function TopBar() {
             <SettingsIcon />
           </IconButton>
 
-          <IconButton sx={topIconButton} onClick={() => navigate("/profile")}>
-            <AccountCircle />
-
+          <IconButton sx={topIconButton} onClick={() => navigate("/profile")} aria-label="פרופיל">
+            {user ? (
+              <UserAvatar
+                name={user.fullName}
+                avatarUrl={user.avatarUrl}
+                sx={{ width: 32, height: 32, bgcolor: "rgba(255,255,255,0.92)", color: "primary.dark", fontSize: "0.85rem" }}
+              />
+            ) : (
+              <AccountCircle />
+            )}
           </IconButton>
           <Tooltip title={tooltipText} arrow>
             <IconButton sx={topIconButton} onClick={() => {
