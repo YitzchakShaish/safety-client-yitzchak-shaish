@@ -8,7 +8,7 @@ import EventIcon from '@mui/icons-material/Event';
 import SearchIcon from '@mui/icons-material/Search';
 import UserProfileCard from "./UserProfileCard";
 import { sidebarItemButton } from "../styles/common";
-import { sidebarHeaderStyle, sidebarScrollbarSx } from "../styles/sidebar.styles";
+import { sidebarHeaderStyle } from "../styles/sidebar.styles";
 import { useUser } from "../hooks/useUser";
 
 export default function Sidebar() {
@@ -30,33 +30,30 @@ export default function Sidebar() {
     <Drawer
       variant="permanent"
       anchor="right"
-      sx={[
-        {
+      sx={{
+        width: "clamp(8rem, 13vw, 15rem)",
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
           width: "clamp(8rem, 13vw, 15rem)",
-          flexShrink: 0,
+          backgroundImage: theme.palette.background.sidebar,
+          borderLeft: `1px solid ${theme.palette.divider}`,
+          borderTopLeftRadius: "1rem",
+          borderBottomLeftRadius: "1rem",
+          boxShadow: "rgba(0,0,0,0.08) -2px 0px 6px",
+          top: "4rem",
+          height: "calc(100vh - 4rem)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "auto",
+          transition: "width 0.3s ease",
+        },
+        [theme.breakpoints.down("md")]: {
           "& .MuiDrawer-paper": {
-            width: "clamp(8rem, 13vw, 15rem)",
-            backgroundImage: theme.palette.background.sidebar,
-            borderLeft: `1px solid ${theme.palette.divider}`,
-            borderTopLeftRadius: "1rem",
-            borderBottomLeftRadius: "1rem",
-            boxShadow: "rgba(0,0,0,0.08) -2px 0px 6px",
-            top: "4rem",
-            height: "calc(100vh - 4rem)",
-            display: "flex",
-            flexDirection: "column",
+            width: "clamp(6rem, 20vw, 12rem)",
             overflow: "auto",
-            transition: "width 0.3s ease",
-          },
-          [theme.breakpoints.down("md")]: {
-            "& .MuiDrawer-paper": {
-              width: "clamp(6rem, 20vw, 12rem)",
-              overflow: "auto",
-            },
           },
         },
-        { "& .MuiDrawer-paper": sidebarScrollbarSx(theme) },
-      ]}
+      }}
     >
       <Box sx={sidebarHeaderStyle(theme)}>
         <Typography variant="h6" sx={{ color: theme.palette.primary.main }}>
