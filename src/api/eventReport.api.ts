@@ -1,7 +1,6 @@
 import type { EventReport, EventReportWithId } from "../types";
 import { getToken } from "../utils/storage";
-
-const BASE_URL = "http://localhost:3000";
+import { API_BASE_URL as BASE_URL } from "../config/env";
 
 export async function createEventReport(data: EventReport) {
     const token = getToken();

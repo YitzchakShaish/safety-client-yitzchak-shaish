@@ -1,8 +1,9 @@
 import type { AuthResponse } from "../types/authResponse";
 import { setToken, setUser } from "../utils/storage";
+import { API_BASE_URL } from "../config/env";
 
 
-const BASE_URL = "http://localhost:3000/auth";
+const BASE_URL = `${API_BASE_URL}/auth`;
 
 export const signup = async (fullName: string, email: string): Promise<AuthResponse> => {
   try {

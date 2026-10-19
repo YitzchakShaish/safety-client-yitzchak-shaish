@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+import { API_BASE_URL as BASE_URL } from "../config/env";
 export async function uploadReportImages(reportId: string, images: File[]) {
     const formData = new FormData();
     images.forEach((img) => formData.append("images", img));

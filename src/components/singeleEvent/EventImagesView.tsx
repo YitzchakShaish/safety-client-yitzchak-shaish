@@ -3,6 +3,7 @@ import { CardContent, Dialog, DialogContent, DialogTitle, IconButton, Typography
 import { Grid } from "@mui/material";
 import { Card, CardMedia } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { API_BASE_URL } from "../../config/env";
 
 export default function EventImagesView({
   images,
@@ -11,7 +12,7 @@ export default function EventImagesView({
 }) {
   const [open, setOpen] = useState(false);
   const [currentImg, setCurrentImg] = useState<string>("");
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = API_BASE_URL;
   return (
     <>
       <Card sx={{ mb: 3 }}>
