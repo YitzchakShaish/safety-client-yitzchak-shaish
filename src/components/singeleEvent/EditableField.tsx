@@ -1,11 +1,13 @@
 import { TextField, Select, MenuItem, Typography } from "@mui/material";
 import { optionsMap, optionsStatus } from "../../types";
 
+export type EditableValue = string | number | boolean | Date | null | undefined;
+
 export default function EditableField({ field, value, editable, onChange }: {
   field: string;
-  value: any;
+  value: EditableValue;
   editable: boolean;
-  onChange: (value: any) => void;
+  onChange: (value: EditableValue) => void;
 }) {
   const options = optionsMap[field];
   const optionsS = optionsStatus[field];

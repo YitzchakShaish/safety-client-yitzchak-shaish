@@ -1,18 +1,11 @@
+import { useEffect, useState, type ReactNode } from "react";
 import { getCurrentUser } from "../api/users.api";
-import { getToken } from "../utils/storage";
-import { createContext, useEffect, useState, type ReactNode } from "react";
-import { getUser, removeToken, removeUser, setUser } from "../utils/storage";
-
-interface UserContextType {
-    user: any;
-    updateUser: (newUser: any) => void;
-    logout: () => void;
-}
-
-export const UserContext = createContext<UserContextType | undefined>(undefined);
+import type { SessionUser } from "../types/sessionUser";
+import { getToken, getUser, removeToken, removeUser, setUser } from "../utils/storage";
+import { UserContext } from "./userContextBase";
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUserState] = useState(getUser());
+    const [user, setUserState] = useState<SessionUser | null>(getUser());
 
     useEffect(() => {
         const onSessionExpired = () => setUserState(null);
@@ -35,7 +28,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
 
-    const updateUser = (newUser: any) => {
+    const updateUser = (newUser: SessionUser) => {
         setUser(newUser);
         setUserState(newUser);
     };
@@ -52,5 +45,3 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         </UserContext.Provider>
     );
 };
-
-

@@ -1,6 +1,11 @@
 import { authenticatedFetch } from "./authenticatedFetch";
 import { API_BASE_URL as BASE_URL } from "../config/env";
 import { getToken } from "../utils/storage";
+import { errorMessage, readJson } from "./readJson";
+
+interface ImageUploadResponse {
+    message?: string;
+}
 
 export async function uploadReportImages(reportId: string, images: File[]) {
     const token = getToken();
@@ -15,12 +20,7 @@ export async function uploadReportImages(reportId: string, images: File[]) {
             body: formData,
         });
 
-        let result: any = {};
-        try {
-            result = await res.json();
-        } catch {
-            result = { message: "" };
-        }
+        const result = await readJson<ImageUploadResponse>(res, { message: "" });
 
         return {
             status: res.status,
@@ -28,8 +28,7 @@ export async function uploadReportImages(reportId: string, images: File[]) {
             success: res.ok
         };
 
-    } catch (error: any) {
-        return { status: 0, message: error.message || "Unknown error", success: false };
+    } catch (error: unknown) {
+        return { status: 0, message: errorMessage(error) || "Unknown error", success: false };
     }
 }
-

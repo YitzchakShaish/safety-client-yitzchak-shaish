@@ -33,7 +33,7 @@ export default function UserManagementPage() {
         try {
             const saved = await saveUser(editing);
             setUsers(previous => previous.map(item => item.id === saved.id ? saved : item));
-            if (saved.id === user.id) updateUser(saved);
+            if (user && saved.id === user.id) updateUser(saved);
             setEditing(null);
             setMessage("פרטי המשתמש נשמרו בהצלחה");
         } catch (err) { setError(err instanceof Error ? err.message : "שגיאה בשמירה"); }

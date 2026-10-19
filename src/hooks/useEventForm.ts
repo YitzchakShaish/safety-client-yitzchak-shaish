@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { EventFormContext, type EventFormContextType,  } from "../context/EventFormContext";
+import { EventFormContext, type EventFormContextType } from "../context/eventFormContextBase";
 
 export const useEventForm = (): EventFormContextType => {
   const context = useContext(EventFormContext);

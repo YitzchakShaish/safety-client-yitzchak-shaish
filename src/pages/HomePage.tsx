@@ -6,14 +6,14 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 import StatCard from "../components/common/StatCard";
-import { getOverviewStats } from "../api/overview.api";
+import { getOverviewStats, type OverviewStats } from "../api/overview.api";
 import BackHandIcon from '@mui/icons-material/BackHand';
 import { useUser } from "../hooks/useUser";
 import { headerText } from "../styles/common";
 
 export default function HomePage() {
   const { user } = useUser();
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<OverviewStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,13 +22,12 @@ export default function HomePage() {
       try {
         const result = await getOverviewStats();
         console.log(result);
-        if (result.success) setStats(result.data);
+        if (result.success) setStats(result.data ?? null);
 
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
-        console.log(stats)
       }
     };
     fetchStats();

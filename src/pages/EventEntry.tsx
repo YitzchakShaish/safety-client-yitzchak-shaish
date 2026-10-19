@@ -7,7 +7,7 @@ import { innerBoxSx, outerBoxSx } from '../styles/eventEntry.styles';
 import { useEventForm } from '../hooks/useEventForm';
 import { createEventReport } from '../api/eventReport.api';
 import StatusAlert from "../components/common/StatusAlert";
-import { createInitialEventData } from '../context/EventFormContext';
+import { createInitialEventData } from '../context/eventFormContextBase';
 import { useUser } from "../hooks/useUser";
 import { uploadReportImages } from '../api/eventReportImages.api';
 

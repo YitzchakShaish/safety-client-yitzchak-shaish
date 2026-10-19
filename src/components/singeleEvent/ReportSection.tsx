@@ -1,15 +1,17 @@
 import { Card, CardContent, Typography, Grid } from "@mui/material";
-import EditableField from "./EditableField";
+import EditableField, { type EditableValue } from "./EditableField";
 import { fieldLabels } from "../../types";
 
 
-export default function ReportSection({ title, data, editableFields, onChange }: {
+export default function ReportSection<T extends object>({ title, data, editableFields, onChange }: {
   title: string;
-  data: Record<string, any>;
+  data: T;
   section: "reporterInfo" | "eventInfo" | "summaryInfo";
   editableFields: string[];
-  onChange: (field: string, value: any) => void;
+  onChange: (field: string, value: EditableValue) => void;
 }) {
+  const entries = Object.entries(data) as [string, EditableValue][];
+
   return (
     <Card sx={{ mb: 3 }}>
       <CardContent>
@@ -19,7 +21,7 @@ export default function ReportSection({ title, data, editableFields, onChange }:
         <Grid container spacing={3}>
 
           {/* // Loop through each field in the data and create a grid item with a label and editable field */}
-          {Object.entries(data).map(([key, value]) => (
+          {entries.map(([key, value]) => (
             <Grid size={{ sm: 6, md: 4, lg: 3 }} key={key}>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                 {fieldLabels[key] || key}
