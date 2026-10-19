@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { alpha, createTheme } from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
@@ -8,8 +8,33 @@ declare module '@mui/material/styles' {
   }
 }
 
-export const getAppTheme = (mode: "light" | "dark") =>
-  createTheme({
+const scrollbarStyles = (thumb: string, thumbHover: string) => ({
+  scrollbarWidth: "thin" as const,
+  scrollbarColor: `${thumb} transparent`,
+  "&:hover": {
+    scrollbarColor: `${thumbHover} transparent`,
+  },
+  "&::-webkit-scrollbar": {
+    width: 6,
+    height: 6,
+  },
+  "&::-webkit-scrollbar-track": {
+    backgroundColor: "transparent",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: thumb,
+    borderRadius: 999,
+  },
+  "&::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: thumbHover,
+  },
+  "&::-webkit-scrollbar-corner": {
+    backgroundColor: "transparent",
+  },
+});
+
+export const getAppTheme = (mode: "light" | "dark") => {
+  const theme = createTheme({
     direction: "rtl",
     palette: {
       mode,
@@ -49,13 +74,6 @@ export const getAppTheme = (mode: "light" | "dark") =>
     },
 
     components: {
-      MuiCssBaseline: {
-        styleOverrides: {
-          html: {
-            fontSize: "clamp(14px, 1.1vw, 18px)",
-          },
-        },
-      },
       MuiAppBar: {
         styleOverrides: {
           root: {
@@ -77,3 +95,22 @@ export const getAppTheme = (mode: "light" | "dark") =>
       },
     }
   });
+
+  const accent = mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main;
+  const thumb = alpha(accent, mode === "dark" ? 0.5 : 0.4);
+  const thumbHover = alpha(accent, mode === "dark" ? 0.85 : 0.72);
+  const scrollbar = scrollbarStyles(thumb, thumbHover);
+
+  theme.components!.MuiCssBaseline = {
+    styleOverrides: {
+      html: {
+        fontSize: "clamp(14px, 1.1vw, 18px)",
+        ...scrollbar,
+      },
+      body: scrollbar,
+      "*": scrollbar,
+    },
+  };
+
+  return theme;
+};

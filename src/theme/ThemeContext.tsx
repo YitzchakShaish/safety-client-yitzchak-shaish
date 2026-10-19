@@ -1,5 +1,6 @@
 import { createContext, useMemo, useState, useContext, type ReactNode } from "react";
 import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import { getAppTheme } from "./theme"; 
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -21,7 +22,10 @@ export default function ThemeContextProvider({ children }: { children: ReactNode
 
   return (
     <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
