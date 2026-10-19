@@ -1,78 +1,60 @@
-import React, { useState } from "react";
-import { Box, Paper, Typography, Avatar, Button, Alert, Tab, Tabs } from "@mui/material";
+import { Box, Paper, Typography, Tab, Tabs } from "@mui/material";
+import { useState } from "react";
 import { useUser } from "../hooks/useUser";
+import { roleLabel } from "../api/users.api";
+import AvatarPictureField from "../components/profile/AvatarPictureField";
 
-type MessageType = "success" | "info" | "error";
+function detailValue(value: unknown): string {
+    if (typeof value !== "string") return "—";
+    const trimmed = value.trim();
+    return trimmed || "—";
+}
 
 export default function UserProfilePage() {
     const { user } = useUser();
-    const [editing, setEditing] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [message, setMessage] = useState<string | null>(null);
-    const [messageType, setMessageType] = useState<MessageType>("info");
-    const [tab, setTab] = useState(0); // 0 = Profile, 1 = Statistics
-
-    const showMessage = (text: string, type: MessageType = "info") => {
-        setMessage(text);
-        setMessageType(type);
-        setTimeout(() => setMessage(null), 3000);
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setSelectedFile(e.target.files[0]);
-        }
-    };
-
-    const handleUpload = () => {
-        if (!selectedFile || !user) return;
-        showMessage("התמונה עודכנה בהצלחה", "success");
-        setEditing(false);
-    };
+    const [tab, setTab] = useState(0);
 
     if (!user) return <div>Loading...</div>;
 
+    const details: [string, string][] = [
+        ["אימייל", detailValue(user.email)],
+        ["דרגה", detailValue(user.rank)],
+        ["תפקיד", detailValue(user.position)],
+        ["יחידה", detailValue(user.unit)],
+        ["הרשאה", roleLabel(typeof user.role === "string" ? user.role : undefined)],
+    ];
+
     return (
-        <Box sx={{ height: "calc(100vh - 5rem)", p: 2, display: "flex", justifyContent: "center" }}>
-            <Box sx={{ width: "100%", maxWidth: 500 }}>
-                {message && <Alert severity={messageType} sx={{ mb: 2 }}>{message}</Alert>}
+        <Box sx={{ width: "100%", maxWidth: 520, maxHeight: "calc(100vh - 6rem)", overflow: "auto", p: 1 }}>
+            <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+                <Tabs value={tab} onChange={(_, newVal) => setTab(newVal)} centered>
+                    <Tab label="פרופיל" />
+                    <Tab label="סטטיסטיקות" />
+                </Tabs>
 
-                <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
-                    <Tabs value={tab} onChange={(_, newVal) => setTab(newVal)} centered>
-                        <Tab label="פרופיל" />
-                        <Tab label="סטטיסטיקות" />
-                    </Tabs>
-
-                    {tab === 0 && (
-                        <Box sx={{ textAlign: "center", mt: 3 }}>
-                            <Avatar src={user.avatarUrl} sx={{ width: 100, height: 100, mx: "auto", mb: 2 }} />
-                            <Typography variant="h6" mb={2}>{user.fullName}</Typography>
-
-                            {editing ? (
-                                <Box>
-                                    <input type="file" onChange={handleFileChange} />
-                                    <Button variant="contained" sx={{ mt: 2 }} onClick={handleUpload}>
-                                        שמור תמונה
-                                    </Button>
-                                    <Button variant="text" sx={{ mt: 1 }} onClick={() => setEditing(false)}>
-                                        ביטול
-                                    </Button>
+                {tab === 0 && (
+                    <Box sx={{ mt: 3 }}>
+                        <AvatarPictureField />
+                        <Typography variant="h6" textAlign="center" sx={{ mt: 2 }}>{user.fullName}</Typography>
+                        <Box sx={{ display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 2, rowGap: 1, mt: 2 }}>
+                            {details.map(([label, value]) => (
+                                <Box key={label} sx={{ display: "contents" }}>
+                                    <Typography color="text.secondary">{label}</Typography>
+                                    <Typography>{value}</Typography>
                                 </Box>
-                            ) : (
-                                <Button variant="contained" onClick={() => setEditing(true)}>ערוך פרופיל</Button>
-                            )}
+                            ))}
                         </Box>
-                    )}
+                    </Box>
+                )}
 
-                    {tab === 1 && (
-                        <Box sx={{ mt: 3 }}>
-                            <Typography>דוחות שנוצרו: {user.reportsCount ?? 0}</Typography>
-                            <Typography>דוחות עודכנו: {user.updatesCount ?? 0}</Typography>
-                            <Typography>דוחות נמחקו: {user.deletesCount ?? 0}</Typography>
-                        </Box>
-                    )}
-                </Paper>
-            </Box>
+                {tab === 1 && (
+                    <Box sx={{ mt: 3 }}>
+                        <Typography>דוחות שנוצרו: {user.reportsCount ?? 0}</Typography>
+                        <Typography>דוחות עודכנו: {user.updatesCount ?? 0}</Typography>
+                        <Typography>דוחות נמחקו: {user.deletesCount ?? 0}</Typography>
+                    </Box>
+                )}
+            </Paper>
         </Box>
     );
 }
