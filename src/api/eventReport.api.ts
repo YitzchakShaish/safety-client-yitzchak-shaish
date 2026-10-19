@@ -1,3 +1,4 @@
+import { authenticatedFetch } from "./authenticatedFetch";
 import type { EventReport, EventReportWithId } from "../types";
 import { getToken } from "../utils/storage";
 import { API_BASE_URL as BASE_URL } from "../config/env";
@@ -15,7 +16,7 @@ export async function createEventReport(data: EventReport) {
     };
 
     try {
-        const res = await fetch(`${BASE_URL}/event-report`, {
+        const res = await authenticatedFetch(`${BASE_URL}/event-report`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -31,11 +32,26 @@ export async function createEventReport(data: EventReport) {
 
         } catch { }
 
-        return { status: res.status, message: result.message, success: true, user: result.user, id: result.data.id };
+        if (!res.ok || typeof result.data?.id !== "string") {
+            return { status: res.status, message: result.message || "אירעה שגיאה ביצירת הדוח", success: false };
+        }
+        return { status: res.status, message: result.message, success: true, user: result.user, id: result.data.id as string };
 
     } catch (error: any) {
         return { status: 0, message: error.message };
     }
+}
+
+export async function getEventReport(id: string): Promise<EventReportWithId> {
+    const res = await authenticatedFetch(`${BASE_URL}/event-report/${encodeURIComponent(id)}`, {
+        credentials: "include",
+        headers: { "Authorization": `Bearer ${getToken()}` }
+    });
+    const result = await res.json();
+    if (!res.ok || !result.data) {
+        throw new Error(result.message || "שגיאה בטעינת האירוע");
+    }
+    return result.data;
 }
 
 export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, dateTo }: {
@@ -55,7 +71,7 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     if (dateFrom) query.set("dateFrom", dateFrom);
     if (dateTo) query.set("dateTo", dateTo);
 
-    const res = await fetch(`${BASE_URL}/event-reports?${query}`, {
+    const res = await authenticatedFetch(`${BASE_URL}/event-reports?${query}`, {
 
         method: "GET",
         credentials: "include",
@@ -86,7 +102,7 @@ export async function updateEventReport(data: EventReportWithId) {
 
 
     try {
-        const res = await fetch(`${BASE_URL}/event-report`, {
+        const res = await authenticatedFetch(`${BASE_URL}/event-report`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -111,7 +127,7 @@ export async function updateEventReport(data: EventReportWithId) {
 export async function deleteEventReport(id: string) {
     const token = getToken();
     try {
-        const res = await fetch(`${BASE_URL}/event-report/${id}`, {
+        const res = await authenticatedFetch(`${BASE_URL}/event-report/${id}`, {
             method: "DELETE",
             credentials: "include",
             headers: {

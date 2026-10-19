@@ -29,7 +29,6 @@ export default function EventsDashboard() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [total, setTotal] = useState(0);
-  const { logout } = useUser();
 
 
   useEffect(() => {
@@ -44,9 +43,7 @@ export default function EventsDashboard() {
           dateTo: activeFilters.dateTo
         });
 
-        if (status === 403) {
-          return logout();
-        }
+        if (status !== 200) return;
         const { data, pagination } = result;
 
         const rows: EventRow[] = (data as any[])?.map(r => ({

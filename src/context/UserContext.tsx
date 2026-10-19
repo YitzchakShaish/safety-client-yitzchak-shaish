@@ -1,4 +1,4 @@
-import { createContext, useState, type ReactNode } from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 import { getUser, removeToken, removeUser, setUser } from "../utils/storage";
 
 interface UserContextType {
@@ -11,6 +11,12 @@ export const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUserState] = useState(getUser());
+
+    useEffect(() => {
+        const onSessionExpired = () => setUserState(null);
+        window.addEventListener("session-expired", onSessionExpired);
+        return () => window.removeEventListener("session-expired", onSessionExpired);
+    }, []);
 
 
     const updateUser = (newUser: any) => {

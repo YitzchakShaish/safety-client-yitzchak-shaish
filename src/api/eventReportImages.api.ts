@@ -1,3 +1,4 @@
+import { authenticatedFetch } from "./authenticatedFetch";
 import { API_BASE_URL as BASE_URL } from "../config/env";
 import { getToken } from "../utils/storage";
 
@@ -7,7 +8,7 @@ export async function uploadReportImages(reportId: string, images: File[]) {
     images.forEach((img) => formData.append("images", img));
 
     try {
-        const res = await fetch(`${BASE_URL}/reports/${reportId}/images`, {
+        const res = await authenticatedFetch(`${BASE_URL}/reports/${reportId}/images`, {
             method: "POST",
             credentials: "include",
             headers: { "Authorization": `Bearer ${token}` },

@@ -13,7 +13,7 @@ export interface EventFormContextType {
 export const EventFormContext = createContext<EventFormContextType | undefined>(
   undefined
 );
-export const initialEventData: EventReport = {
+export const createInitialEventData = (): EventReport => ({
   reporterInfo: {
     fullName: getUser()?.fullName || "",
     phone: "",
@@ -43,9 +43,9 @@ export const initialEventData: EventReport = {
     approval: false,
   },
  
-}
+});
 export const EventFormProvider = ({ children }: { children: ReactNode }) => {
-  const [eventData, setEventData] = useState<EventReport>(initialEventData);
+  const [eventData, setEventData] = useState<EventReport>(createInitialEventData);
   const [weatherDetails, setWeatherDetails] = useState<WeatherResult | null>(null);
   return (
     <EventFormContext.Provider value={{ eventData, setEventData, weatherDetails, setWeatherDetails }}>
