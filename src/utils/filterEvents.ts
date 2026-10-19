@@ -39,24 +39,26 @@ function rowSearchText(row: EventRow): string {
     .join("\u0000");
 }
 
+/** Calendar day from an event date. Date-only and datetime values share the same day prefix. */
+function eventCalendarDay(value: string): string | null {
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(value.trim());
+  return match ? match[1] : null;
+}
+
 export function filterEventRows(rows: EventRow[], filters: EventFilters): EventRow[] {
   const q = normalizeSearchText(filters.q);
-  const dateFrom = filters.dateFrom ? new Date(filters.dateFrom) : null;
-  const dateTo = filters.dateTo ? new Date(filters.dateTo) : null;
+  const dateFrom = filters.dateFrom?.slice(0, 10) || null;
+  const dateTo = filters.dateTo?.slice(0, 10) || null;
 
   return rows.filter((row) => {
     if (q && !rowSearchText(row).includes(q)) return false;
 
     if (dateFrom || dateTo) {
-      const rowDate = new Date(row.eventDate);
-
-      if (dateFrom && rowDate < dateFrom) return false;
-
-      if (dateTo) {
-        const end = new Date(dateTo);
-        end.setHours(23, 59, 59, 999);
-        if (rowDate > end) return false;
-      }
+      // Compare the event date, and keep the whole 'to' day (from = to = today still matches).
+      const day = eventCalendarDay(String(row.eventDate ?? ""));
+      if (!day) return false;
+      if (dateFrom && day < dateFrom) return false;
+      if (dateTo && day > dateTo) return false;
     }
 
     return true;

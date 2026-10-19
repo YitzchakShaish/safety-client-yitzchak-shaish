@@ -124,3 +124,14 @@ test("keeps date-range filtering", () => {
   });
   assert.deepEqual(matches, [late]);
 });
+
+test("filters on the event date and includes the whole end day", () => {
+  const reportedToday = row({ eventDate: "2024-10-19T18:30:00", unit: "יחידת אלון" });
+  const happenedEarlier = row({ eventDate: "2024-10-18T23:30:00", unit: "יחידת אלון" });
+  const matches = filterEventRows([reportedToday, happenedEarlier], {
+    q: "",
+    dateFrom: "2024-10-19",
+    dateTo: "2024-10-19",
+  });
+  assert.deepEqual(matches, [reportedToday]);
+});

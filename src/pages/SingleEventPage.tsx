@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { Alert, Box, Button, LinearProgress } from "@mui/material";
 import EditSquareIcon from '@mui/icons-material/EditSquare';
 import EditOffIcon from '@mui/icons-material/EditOff';
-import type { EventReportWithId } from "../types";
+import type { EventInfo, EventReportWithId } from "../types";
 import EventHeader from "../components/singeleEvent/EventHeader";
 import ReportSection from "../components/singeleEvent/ReportSection";
 import { deleteEventReport, getEventReport, updateEventReport } from "../api/eventReport.api";
@@ -14,6 +14,33 @@ import { getPermissionLevel, } from "../permissions/getPermissionLevel";
 import { EDITABLE_FIELDS_BY_PERMISSION } from "../permissions/editableFields"
 import { useUser } from "../hooks/useUser";
 import type { EditableValue } from "../components/singeleEvent/EditableField";
+
+function finiteCoordinate(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return null;
+}
+
+/** Address and coordinates stay hidden until the API actually returns them. */
+function visibleEventInfo(eventInfo: EventInfo): Record<string, EditableValue> {
+  const visible: Record<string, EditableValue> = {};
+  for (const [key, value] of Object.entries(eventInfo) as [string, EditableValue][]) {
+    if (key === "address") {
+      if (typeof value === "string" && value.trim()) visible.address = value.trim();
+      continue;
+    }
+    if (key === "latitude" || key === "longitude") {
+      const coordinate = finiteCoordinate(value);
+      if (coordinate != null) visible[key] = coordinate;
+      continue;
+    }
+    visible[key] = value;
+  }
+  return visible;
+}
 
 
 export default function SingleEventPage() {
@@ -155,9 +182,7 @@ function EventDetails({ event }: { event: EventReportWithId }) {
 
       <ReportSection
         title="פרטי האירוע"
-        data={Object.fromEntries(
-          Object.entries(eventData.eventInfo).filter(([key]) => key !== "latitude" && key !== "longitude")
-        )}
+        data={visibleEventInfo(eventData.eventInfo)}
         section="eventInfo"
         editableFields={isEditing ? editableFields.eventInfo ?? [] : []}
         onChange={(field, value) => handleChange("eventInfo", field, value)}
