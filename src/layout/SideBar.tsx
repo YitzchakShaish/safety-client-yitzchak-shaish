@@ -23,6 +23,7 @@ export default function Sidebar() {
     { label: "הזנת אירוע חדש", path: "/event-entry", icon: <EventIcon /> },
     { label: "ניהול אירועים", path: "/events", icon: <SearchIcon /> },
   ];
+  if (user?.role === "admin" || user?.role === "safety_officer") menuItems.push({ label: "סקירת בטיחות", path: "/safety-overview", icon: <DashboardIcon /> });
   if (user?.role === "admin") menuItems.push({ label: "ניהול משתמשים", path: "/users", icon: <SearchIcon /> });
   const location = useLocation();
   return (
