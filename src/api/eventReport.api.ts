@@ -5,6 +5,18 @@ import { getToken } from "../utils/storage";
 import { API_BASE_URL as BASE_URL } from "../config/env";
 import { errorMessage, readJson } from "./readJson";
 
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Extend a calendar day so a `<= dateTo` comparison keeps that entire day. */
+export function inclusiveDateTo(dateTo: string): string {
+    if (DATE_ONLY.test(dateTo)) return `${dateTo} 23:59:59.999`;
+    return dateTo;
+}
+
+function asBoolean(value: unknown): boolean {
+    return value === true || value === "true";
+}
+
 export type ApiMessage = string | string[];
 
 interface EventMutationResponse {
@@ -100,7 +112,8 @@ export async function getAllEventReports({ page = 1, perPage = 10, q, dateFrom, 
     query.set("perPage", String(perPage));
 
     if (dateFrom) query.set("dateFrom", dateFrom);
-    if (dateTo) query.set("dateTo", dateTo);
+    // A date-only upper bound is midnight, which drops every later event that day.
+    if (dateTo) query.set("dateTo", inclusiveDateTo(dateTo));
 
     const res = await authenticatedFetch(`${BASE_URL}/event-reports?${query}`, {
 
@@ -148,7 +161,10 @@ export async function updateEventReport(data: EventReportWithId): Promise<Mutate
         id: data.id,
         eventInfo: { ...data.eventInfo },
         reporterInfo: { ...data.reporterInfo },
-        summaryInfo: { ...data.summaryInfo },
+        summaryInfo: {
+            ...data.summaryInfo,
+            approval: asBoolean(data.summaryInfo.approval),
+        },
     }
 
 

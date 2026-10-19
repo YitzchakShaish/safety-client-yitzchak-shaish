@@ -44,6 +44,8 @@ export const fieldLabels: Record<string, string> = {
   eventResult: "תוצאת האירוע",
   weatherCondition: "תנאי מזג אוויר",
   address: "כתובת מדויקת",
+  latitude: "קו רוחב",
+  longitude: "קו אורך",
   injuryLevel: "רמת פגיעה",
   injuryDetails: "פרטי פגיעה",
   recommendations: "המלצות",
